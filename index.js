@@ -1,4 +1,6 @@
 const express = require('express');
+const db = require('./db');
+
 const apiRouter = require('./routes');
 
 const app = express();

@@ -26,6 +26,7 @@ class CreatePollForm extends Component {
     }
 
     removeOption = () => {
+        // only remove if there are more than 2 options available
         this.setState(prevState => ({ options: prevState.options.length <= 2 ? prevState.options : prevState.options.slice(0, prevState.options.length - 1) }));
     }
 
