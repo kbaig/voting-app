@@ -1,10 +1,10 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const Poll = require('../db/schema/poll');
 
 const router = express.Router();
-const jsonMiddleware = express.json();
+const jsonBodyMiddleware = express.json();
 
 // get the polls
 router.get('/', async (req, res) => {
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // create a poll
-router.post('/', jsonMiddleware, async (req, res) => {
+router.post('/', jsonBodyMiddleware, async (req, res) => {
     const recievedPoll = req.body;
 
     // shape data into how schema expects it
@@ -44,8 +44,8 @@ router.post('/', jsonMiddleware, async (req, res) => {
 
 // vote
 router.post('/vote/:pollid/:optionid', async (req, res) => {
-    const pollid = mongoose.Types.ObjectId(req.params.pollid);
-    const optionid = mongoose.Types.ObjectId(req.params.optionid);
+    const pollid = ObjectId(req.params.pollid);
+    const optionid = ObjectId(req.params.optionid);
 
     try {
         const poll = await Poll.findOneAndUpdate(

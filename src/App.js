@@ -41,10 +41,9 @@ class App extends Component {
     }
   }
 
-  updatePoll = (pollId, poll) => {
+  updatePoll = (pollId, updatedPoll) => {
     this.setState(prevState => {
-      const { polls } = prevState;
-      polls[pollId] = poll;
+      const polls = prevState.polls.map(poll => poll._id === pollId ? updatedPoll : poll);
 
       return {
         ...prevState,
@@ -84,10 +83,14 @@ class App extends Component {
 
 
       <Route path='/' exact component={ Home } />
-      <Route path='/polls/' render={ () => <Polls polls={ this.state.polls } /> } />
-      <Route path='/poll/:id' render={
-          props => <Poll { ...props } { ...this.state.polls[props.match.params.id] } vote={ this.vote } updatePoll={ this.updatePoll }/> 
-        } />
+      <Route path='/polls/' exact render={ () => <Polls polls={ this.state.polls } /> } />
+      <Route path='/polls/:id' render={ props => <Poll
+          { ...props }
+          poll={ this.state.polls.find(poll => poll._id === props.match.params.id) }
+          vote={ this.vote }
+          updatePoll={ this.updatePoll }
+        /> 
+      } />
       <Route path='/create/' render={ () => <CreatePollForm addPoll={ this.addPoll } /> } />
 
       </div>

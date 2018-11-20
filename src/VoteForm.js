@@ -1,29 +1,29 @@
 import React, {Component } from 'react';
 
 class VoteForm extends Component {
-    constructor () {
-        super();
+    constructor (props) {
+        super(props);
 
         this.state = {
-            optionId: 0
+            optionId: props.options[0]._id
         };
-    }
-
-    handleSubmit = e => {
-        console.log('world')
-        e.preventDefault();
-        this.props.vote(this.props.pollId, this.state.optionId);
     }
 
     handleChange = e => {
         this.setState({ optionId: e.target.value });
     }
 
+    handleSubmit = e => {
+        e.preventDefault();
+        console.log(this.props.pollId, this.state.optionId);
+        this.props.vote(this.props.pollId, this.state.optionId);
+    }
+
     render () {
         return (
             <form onSubmit={ this.handleSubmit }>
                 <select value={ this.state.optionId } onChange={ this.handleChange }>
-                    { this.props.options.map((o, i) => <option key={ i } value={ i }>{ o }</option>) }
+                    { this.props.options.map(o => <option key={ o._id } value={ o._id }>{ o.name }</option>) }
                 </select>
                 <input type='submit' />
             </form>

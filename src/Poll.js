@@ -1,3 +1,5 @@
+// todo: fix bug where voting does nothing when navigating directly from one poll to another
+
 import React, { Component } from 'react';
 
 import VoteForm from './VoteForm';
@@ -17,15 +19,17 @@ class Poll extends Component {
     }
 
     render () {
-        const { name, options, match, vote } = this.props;
+        const { poll, vote } = this.props;
+        const { _id, name, options } = poll;
+        
         return (
             <div>
                 { name }
                 <div>
-                Options:
-                    { options.map((o, i) => <div key={ i }>{ o.name }: { o.votes }</div>) }
+                    Options:
+                    { options.map(o => <div key={ o._id }>{ o.name }: { o.votes }</div>) }
                 </div>
-                <VoteForm options={ options.map(o => o.name) } pollId={ match.params.id } vote={ vote } />
+                <VoteForm options={ options } pollId={ _id } vote={ vote } />
             </div>
         );
     }
