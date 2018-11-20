@@ -81,17 +81,16 @@ class App extends Component {
           </ul>
         </nav>
 
-
-      <Route path='/' exact component={ Home } />
-      <Route path='/polls/' exact render={ () => <Polls polls={ this.state.polls } /> } />
-      <Route path='/polls/:id' render={ props => <Poll
-          { ...props }
-          poll={ this.state.polls.find(poll => poll._id === props.match.params.id) }
-          vote={ this.vote }
-          updatePoll={ this.updatePoll }
-        /> 
-      } />
-      <Route path='/create/' render={ () => <CreatePollForm addPoll={ this.addPoll } /> } />
+        <Route path='/' exact component={ Home } />
+        <Route path='/polls/' exact render={ () => <Polls polls={ this.state.polls } /> } />
+        <Route path='/polls/:id' render={ props => <Poll
+            { ...props }
+            poll={ this.state.polls.find(poll => poll._id === props.match.params.id) }
+            vote={ this.vote }
+            updatePoll={ this.updatePoll }
+          /> 
+        } />
+        <Route path='/create/' render={ () => <CreatePollForm addPoll={ this.addPoll } /> } />
 
       </div>
     </Router>;

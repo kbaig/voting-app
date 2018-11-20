@@ -20,18 +20,22 @@ class Poll extends Component {
 
     render () {
         const { poll, vote } = this.props;
-        const { _id, name, options } = poll;
-        
-        return (
-            <div>
-                { name }
+
+        if (poll) {
+            const { _id, name, options } = poll;
+            return (
                 <div>
-                    Options:
-                    { options.map(o => <div key={ o._id }>{ o.name }: { o.votes }</div>) }
+                    { name }
+                    <div>
+                        Options:
+                        { options.map(o => <div key={ o._id }>{ o.name }: { o.votes }</div>) }
+                    </div>
+                    <VoteForm options={ options } pollId={ _id } vote={ vote } />
                 </div>
-                <VoteForm options={ options } pollId={ _id } vote={ vote } />
-            </div>
-        );
+            );
+        } else {
+            return <div></div>;
+        }
     }
 }
 
