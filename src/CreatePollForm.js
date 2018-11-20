@@ -46,26 +46,28 @@ class CreatePollForm extends Component {
             const poll = { name, options };
             this.props.addPoll(poll);
         }   else {
-            console.log(`Name string is empty: ${name === ''}
+            console.log(`Name field is empty: ${name === ''}
             Not enough valid options: ${options.length < 2}`);
         }
     }
 
     render () {
-        const options = this.state.options.map(
-            (o, id) => <input key={ id } type='text' name='options' value={ o } onChange={ e => this.handleOptionChange(e, id) }/>
+        const { options, name } = this.state;
+        const { handleOptionChange, handleSubmit, handleNameChange, addOption, removeOption } = this;
+       
+        const optionFields = options.map(
+            (o, id) => <input key={ id } type='text' name='options' value={ o } onChange={ e => handleOptionChange(e, id) }/>
         );
 
         return (
-        <form onSubmit={ this.handleSubmit }>
+        <form onSubmit={ handleSubmit }>
             <h2>Add a poll</h2>
-            <label>Name: <input type='text' name='name' value={ this.state.name } onChange={ this.handleNameChange }/></label>
+            <label>Name: <input type='text' name='name' value={ name } onChange={ handleNameChange }/></label>
 
             Options:
-            { options }
-            <input type='button' onClick={ this.addOption } value='Add Option'></input>
-            <input type='button' onClick={ this.removeOption } value='Remove Option'></input>
-
+            { optionFields }
+            <input type='button' onClick={ addOption } value='Add Option'></input>
+            <input type='button' onClick={ removeOption } value='Remove Option'></input>
             <input type='submit' />
         </form>
         );

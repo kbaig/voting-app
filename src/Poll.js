@@ -19,7 +19,9 @@ class Poll extends Component {
     }
 
     render () {
-        const { poll, vote } = this.props;
+        const { poll, vote, isAuthenticated } = this.props;
+
+
 
         if (poll) {
             const { _id, name, options } = poll;
@@ -31,6 +33,7 @@ class Poll extends Component {
                         { options.map(o => <div key={ o._id }>{ o.name }: { o.votes }</div>) }
                     </div>
                     <VoteForm options={ options } pollId={ _id } vote={ vote } />
+                    { `I can${!isAuthenticated ? 'not' : ''} add options since I am ${!isAuthenticated ? 'not ' : ''}authenticated` }
                 </div>
             );
         } else {
