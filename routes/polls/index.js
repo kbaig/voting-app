@@ -1,7 +1,7 @@
 const express = require('express');
 const ObjectId = require('mongoose').Types.ObjectId;
 
-const Poll = require('../db/schema/poll');
+const Poll = require('../../db/schema/poll');
 
 const router = express.Router();
 const jsonBodyMiddleware = express.json();
