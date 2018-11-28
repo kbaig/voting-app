@@ -11,13 +11,28 @@ import MyPolls from './MyPolls';
 import CreatePollForm from './CreatePollForm';
 import Login from './Login';
 
+import queryString from 'query-string';
+
 class App extends Component {
   constructor () {
     super();
 
+    // determine if this is a popup being sent a github auth token, and send a message to parent if so
+    const query = queryString.parse(window.location.search);
+    if (query.code) {
+      window.opener.postMessage({ code: query.code }, "http://localhost:3000");
+      window.stop();
+    }    
+
+    // proceed as usual by pulling token from localstorage and/or setting state
+    const token = localStorage.getItem('token');
+    const tokenExists = !!token;
+
     this.state = {
       polls: [],
-      isAuthenticated: false
+      isAuthenticated: tokenExists,
+      token: tokenExists ? token : '',
+      user: tokenExists ? this.tokenToPayload(token): {}
     };
   }
 
@@ -32,12 +47,20 @@ class App extends Component {
     }
   }
 
+  // parse token and return formatted payload
+  tokenToPayload = token => {
+    const unformattedPayload = JSON.parse(atob(token.match(/\.(\w+)\./)[1]));
+    const { _id: id, github_id, github_login, name, email, avatar } = unformattedPayload;
+
+    return { id, github_id, github_login, name, email, avatar };
+  }
+
   addPoll = async poll => {
     try {
       const response = await fetch('http://localhost:3001/api/polls', {
           method: 'POST',
-          body: JSON.stringify(poll),
-          headers: { 'content-type': 'application/json' }
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(poll)
       });
       const jsonResponse = await response.json();
 
@@ -69,16 +92,30 @@ class App extends Component {
     }
   }
 
-  login = () => {
-    this.setState({ isAuthenticated: true });
+  login = token => {
+    localStorage.setItem('token', token);
+
+    const user = this.tokenToPayload(token);   
+
+    this.setState({
+      isAuthenticated: true,
+      token,
+      user
+    });
   }
 
   logout = () => {
-    this.setState({ isAuthenticated: false });
+    localStorage.clear();
+
+    this.setState({
+      isAuthenticated: false,
+      token: '',
+      user: {}
+    });
   }
 
   render() {
-    const { isAuthenticated, polls } = this.state;
+    const { polls, isAuthenticated, user } = this.state;
     const { addPoll, updatePoll, vote, login, logout } = this;
 
     return <Router>
@@ -87,18 +124,20 @@ class App extends Component {
           <ul>
             <li><Link to='/'>Home</Link></li>
             <li><Link to='/polls/'>Polls</Link></li>
-            { isAuthenticated && <li><Link to='/user/id/polls'>My Polls</Link></li> }            
+            { isAuthenticated && <li><Link to='/my-polls/'>My Polls</Link></li> }            
             { isAuthenticated && <li><Link to='/create/'>Create A Poll</Link></li> }
             <li>{ isAuthenticated ?
               <button onClick={ logout }>Logout</button> :
               <Link to='/login/'>Login</Link>
             }</li>
-          </ul>
+          </ul> 
         </nav>
 
-        <Route path='/' exact component={ Home } />
+        { isAuthenticated && `You are logged in as ${user.name} whose email is ${user.email}.` }
+
+        <Route path='/' exact render={ props => <Home { ...props } /> } />
         <Route path='/polls/' exact render={ () => <Polls polls={ polls } /> } />
-        <Route path='/polls/:id' render={ props => <Poll
+        <Route path='/polls/:id/' render={ props => <Poll
             { ...props }
             poll={ polls.find(poll => poll._id === props.match.params.id) }
             vote={ vote }
@@ -106,14 +145,14 @@ class App extends Component {
             isAuthenticated={ isAuthenticated } 
           /> 
         } />
-        <ProtectedRoute path='/user/id/polls' isAuthenticated={ isAuthenticated } component={ MyPolls } />
+        <ProtectedRoute path='/my-polls/' isAuthenticated={ isAuthenticated } component={ MyPolls } />
         <ProtectedRoute
           path='/create/'
           isAuthenticated={ isAuthenticated }
           component={ CreatePollForm }
-          passDown={{ addPoll }}
+          addPoll={ addPoll }
         />
-        <Route path='/login/' render={ () => <Login isAuthenticated={ isAuthenticated } login={ login } /> } />
+        <Route path='/login/' render={ props => <Login { ...props } isAuthenticated={ isAuthenticated } login={ login } /> } />
 
       </div>
     </Router>;

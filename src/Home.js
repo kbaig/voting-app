@@ -1,5 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export default () => {
-    return <div>Welcome to the Polling App!</div>
-};
+class Home extends Component {
+    render () {
+        return (
+            <div>
+                Welcome to the Polling App!
+            </div>
+        );
+    }
+}
+
+export default Home;
