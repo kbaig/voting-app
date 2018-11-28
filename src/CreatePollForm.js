@@ -44,10 +44,25 @@ class CreatePollForm extends Component {
         // add poll only if name isn't empty string and there are at least 2 nonempty string options
         if (name !== '' && options.length >= 2) {
             const poll = { name, options };
-            this.props.addPoll(poll);
+            this.addPoll(poll);
         }   else {
             console.log(`Name field is empty: ${name === ''}
             Not enough valid options: ${options.length < 2}`);
+        }
+    }
+
+    addPoll = async poll => {
+        try {
+            const response = await fetch('http://localhost:3001/api/polls', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(poll)
+            });
+            const jsonResponse = await response.json();
+    
+            console.log('created poll:', jsonResponse);
+        } catch (err) {
+            console.log(err);
         }
     }
 

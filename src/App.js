@@ -29,7 +29,6 @@ class App extends Component {
     const tokenExists = !!token;
 
     this.state = {
-      polls: [],
       isAuthenticated: tokenExists,
       token: tokenExists ? token : '',
       user: tokenExists ? this.tokenToPayload(token): {}
@@ -55,43 +54,6 @@ class App extends Component {
     return { id, github_id, github_login, name, email, avatar };
   }
 
-  addPoll = async poll => {
-    try {
-      const response = await fetch('http://localhost:3001/api/polls', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(poll)
-      });
-      const jsonResponse = await response.json();
-
-      this.setState(prevState => ({ polls: [...prevState.polls, jsonResponse ] }));  
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  updatePoll = (pollId, updatedPoll) => {
-    this.setState(prevState => {
-      const polls = prevState.polls.map(poll => poll._id === pollId ? updatedPoll : poll);
-
-      return {
-        ...prevState,
-        polls
-      };
-    });
-  }
-
-  vote = async (pollId, optionId) => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/polls/vote/${pollId}/${optionId}`, { method: 'POST' });
-      const poll = await response.json();
-
-      this.updatePoll(pollId, poll);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   login = token => {
     localStorage.setItem('token', token);
 
@@ -115,8 +77,8 @@ class App extends Component {
   }
 
   render() {
-    const { polls, isAuthenticated, user } = this.state;
-    const { addPoll, updatePoll, vote, login, logout } = this;
+    const { isAuthenticated, user } = this.state;
+    const { login, logout } = this;
 
     return <Router>
       <div>
@@ -135,24 +97,21 @@ class App extends Component {
 
         { isAuthenticated && `You are logged in as ${user.name} whose email is ${user.email}.` }
 
-        <Route path='/' exact render={ props => <Home { ...props } /> } />
-        <Route path='/polls/' exact render={ () => <Polls polls={ polls } /> } />
+        <Route path='/' exact component={ Home } />
+        <Route path='/polls/' exact component={ Polls } />
         <Route path='/polls/:id/' render={ props => <Poll
-            { ...props }
-            poll={ polls.find(poll => poll._id === props.match.params.id) }
-            vote={ vote }
-            updatePoll={ updatePoll }
-            isAuthenticated={ isAuthenticated } 
-          /> 
-        } />
-        <ProtectedRoute path='/my-polls/' isAuthenticated={ isAuthenticated } component={ MyPolls } />
-        <ProtectedRoute
-          path='/create/'
-          isAuthenticated={ isAuthenticated }
-          component={ CreatePollForm }
-          addPoll={ addPoll }
+        { ...props }
+        isAuthenticated={ isAuthenticated }
+          /> }
         />
-        <Route path='/login/' render={ props => <Login { ...props } isAuthenticated={ isAuthenticated } login={ login } /> } />
+        <ProtectedRoute path='/my-polls/' isAuthenticated={ isAuthenticated } component={ MyPolls } />
+        <ProtectedRoute path='/create/'   isAuthenticated={ isAuthenticated } component={ CreatePollForm } />
+        <Route path='/login/' render={ props => <Login
+          { ...props }
+          isAuthenticated={ isAuthenticated }
+          login={ login }
+          />
+        } />
 
       </div>
     </Router>;

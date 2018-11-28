@@ -15,15 +15,17 @@ class VoteForm extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        console.log(this.props.pollId, this.state.optionId);
-        this.props.vote(this.props.pollId, this.state.optionId);
+        this.props.vote(this.state.optionId);
     }
 
     render () {
+        const { optionId } = this.state;
+        const { handleChange, handleSubmit } = this;
+        const { options } = this.props;
         return (
-            <form onSubmit={ this.handleSubmit }>
-                <select value={ this.state.optionId } onChange={ this.handleChange }>
-                    { this.props.options.map(o => <option key={ o._id } value={ o._id }>{ o.name }</option>) }
+            <form onSubmit={ handleSubmit }>
+                <select value={ optionId } onChange={ handleChange }>
+                    { options.map(o => <option key={ o._id } value={ o._id }>{ o.name }</option>) }
                 </select>
                 <input type='submit' />
             </form>
