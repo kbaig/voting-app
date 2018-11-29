@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    github_id: Number,
-    github_login: String,
     name: String,
     email: String,
-    avatar: String
+    username: String,
+    encrypted_password: String,
+    avatar: String,
+    github_id: Number,
+    github_login: String
 });
 
 userSchema.statics.githubUpdateOrCreate = async function (user) {

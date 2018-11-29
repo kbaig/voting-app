@@ -30,8 +30,7 @@ class GitHubLogin extends Component {
                 } catch (err) {
                     console.log('error: ', err)
                 }
-
-
+                
             }
         }
 

@@ -27,6 +27,17 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// get all polls created by a specific user
+router.get('/user/:id', async (req, res) => {
+    const creator_id = ObjectId(req.params.id);
+    try {
+        const polls = await Poll.find({ creator_id });
+        res.json(polls);
+    } catch (err) {
+        res.json(err);
+    }
+});
+
 // create a poll
 router.post('/', jsonBodyMiddleware, async (req, res) => {
     const recievedPoll = req.body;
@@ -42,24 +53,56 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
     }
 });
 
+// delete a poll and return it
+router.delete('/:pollId', async (req, res) => {
+    const { pollId } = req.params;
+
+    try {
+        const poll = await Poll.findByIdAndDelete(ObjectId(pollId));
+        res.json(poll);
+    } catch (err) {
+        res.json(error);
+    }
+    
+});
+
 // vote
-router.post('/vote/:pollid/:optionid', async (req, res) => {
-    const pollid = ObjectId(req.params.pollid);
-    const optionid = ObjectId(req.params.optionid);
+router.post('/vote/:pollId/:optionId', async (req, res) => {
+    const pollId = ObjectId(req.params.pollId);
+    const optionId = ObjectId(req.params.optionId);
 
     try {
         const poll = await Poll.findOneAndUpdate(
-            { _id: pollid },
+            { _id: pollId },
             { $inc: { "options.$[option].votes": 1 } },
             {
-                arrayFilters: [{ "option._id": { $eq: optionid } }],
+                arrayFilters: [{ "option._id": { $eq: optionId } }],
                 new: true
             }
         );
         res.json(poll);
     } catch (err) {
         res.json(err);
-    }    
+    }
+
+});
+
+// add an option to a poll
+router.post('/add-option/:pollId', async (req, res) => {
+    const pollId = ObjectId(req.params.pollId);
+    const { option } = req.query;
+
+    try {
+        const poll = await Poll.findOneAndUpdate(
+            { _id: pollId },
+            { $push: { options: { name: option } } },
+            { new: true }
+        );
+        res.json(poll);
+    } catch (err) {
+        res.json(err);
+    }
+
 });
 
 module.exports = router;

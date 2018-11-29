@@ -10,6 +10,7 @@ const optionSchema = new mongoose.Schema({
 
 const pollSchema = new mongoose.Schema({
     name: String,
+    creator_id: mongoose.Schema.Types.ObjectId,
     options: [ optionSchema ]
 });
 

@@ -6,6 +6,7 @@ const fetch = require('node-fetch');
 
 const User = require('../../db/schema/user');
 const createToken = require('./createToken');
+const { encrypt, comparePasswords } = require('./encryption');
 
 const GitHubConfig = {
     clientID: '3a131bf62bd53c407b42',
@@ -14,6 +15,7 @@ const GitHubConfig = {
     scope: 'read:user'
 };
 
+// begin github auth process
 router.get('/github', (req, res) => {
     const query = queryString.stringify({
         client_id: GitHubConfig.clientID,
@@ -23,7 +25,8 @@ router.get('/github', (req, res) => {
     res.redirect(`https://github.com/login/oauth/authorize?${query}`)
 });
 
-router.post('/github/', jsonBodyMiddleware, async (req, res) => {
+// use github login code to get user profile and return jwt
+router.post('/github', jsonBodyMiddleware, async (req, res) => {
     try {
         // exchange code for token
         const tokenQuery = queryString.stringify({
@@ -61,8 +64,69 @@ router.post('/github/', jsonBodyMiddleware, async (req, res) => {
         // send jwt as response
         res.json(token);
     } catch (error) {
-        console.log('error: ', error);
+        console.log('error:', error);
         res.json('there was an error');
+    }
+});
+
+// process sign up form
+router.post('/signup', jsonBodyMiddleware, async (req, res) => {
+    const { name, email, username, password } = req.body;
+
+    try {
+        // check if username or email are taken
+        const preexistingUsers = await User.find({ $or: [{ email }, { username }] });
+        if (preexistingUsers.length > 0) {
+            return res.json({error: 'email or username already taken'});
+        }
+
+        // encrypt password
+        const encrypted_password = await encrypt(password);
+
+        // create account
+        const user = await User.create({ name, email, username, encrypted_password });
+
+        // create jwt
+        const payload = user.toObject();
+        const token = createToken(payload);
+
+        // send jwt as response
+        res.json({ token });
+    } catch (error) {
+        console.log('error:', error);
+        res.json({ error });
+    }
+});
+
+// log users in
+router.post('/login', jsonBodyMiddleware, async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        // attempt to get user
+        const user = await User.findOne({ username });
+        const userExists = !!user;
+
+        if (userExists) {
+            // compare passwords
+            const passwordsMatch = await comparePasswords(password, user.encrypted_password);
+
+            if (passwordsMatch) {
+                // create jwt
+                const payload = user.toObject();
+                const token = createToken(payload);
+
+                // send jwt as response
+                return res.json({ token });
+            }
+        }
+
+        // respond with error if user doesn't exist and/or passwords don't match
+        res.json({ error: 'invalid username or password' });
+
+    } catch (error) {
+        console.log('error:', error);
+        res.json({ error });
     }
 });
 

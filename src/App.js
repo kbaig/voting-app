@@ -3,6 +3,7 @@ import './App.css';
 
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
+import ProtectedAgainstAuthRoute from './ProtectedAgainstAuthRoute';
 
 import Home from './Home';
 import Polls from './Polls';
@@ -10,6 +11,7 @@ import Poll from './Poll';
 import MyPolls from './MyPolls';
 import CreatePollForm from './CreatePollForm';
 import Login from './Login';
+import SignUpForm from './SignUpForm';
 
 import queryString from 'query-string';
 
@@ -82,16 +84,21 @@ class App extends Component {
 
     return <Router>
       <div>
+
         <nav>
           <ul>
             <li><Link to='/'>Home</Link></li>
             <li><Link to='/polls/'>Polls</Link></li>
             { isAuthenticated && <li><Link to='/my-polls/'>My Polls</Link></li> }            
             { isAuthenticated && <li><Link to='/create/'>Create A Poll</Link></li> }
-            <li>{ isAuthenticated ?
+            { isAuthenticated ?
               <button onClick={ logout }>Logout</button> :
-              <Link to='/login/'>Login</Link>
-            }</li>
+              <>
+                <li><Link to='/login/'>Login</Link></li>
+                <li><Link to="/sign-up">Sign Up</Link></li>
+              </>
+            }
+            
           </ul> 
         </nav>
 
@@ -100,18 +107,24 @@ class App extends Component {
         <Route path='/' exact component={ Home } />
         <Route path='/polls/' exact component={ Polls } />
         <Route path='/polls/:id/' render={ props => <Poll
-        { ...props }
-        isAuthenticated={ isAuthenticated }
-          /> }
-        />
-        <ProtectedRoute path='/my-polls/' isAuthenticated={ isAuthenticated } component={ MyPolls } />
-        <ProtectedRoute path='/create/'   isAuthenticated={ isAuthenticated } component={ CreatePollForm } />
-        <Route path='/login/' render={ props => <Login
           { ...props }
           isAuthenticated={ isAuthenticated }
+          /> }
+        />
+        <ProtectedRoute path='/my-polls/' isAuthenticated={ isAuthenticated } component={ MyPolls } user={ user } />
+        <ProtectedRoute path='/create/' isAuthenticated={ isAuthenticated } component={ CreatePollForm } />
+        <ProtectedAgainstAuthRoute
+          path='/login/'
+          isAuthenticated={ isAuthenticated }
+          component={ Login }
           login={ login }
-          />
-        } />
+        />
+        <ProtectedAgainstAuthRoute
+          path='/sign-up/'
+          component={ SignUpForm }
+          isAuthenticated={ isAuthenticated }
+          login={ login }
+        />
 
       </div>
     </Router>;
