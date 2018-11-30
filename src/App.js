@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import queryString from 'query-string';
 
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
@@ -13,18 +13,20 @@ import CreatePollForm from './CreatePollForm';
 import Login from './Login';
 import SignUpForm from './SignUpForm';
 
-import queryString from 'query-string';
+import './App.css';
 
 class App extends Component {
   constructor () {
     super();
 
     // determine if this is a popup being sent a github auth token, and send a message to parent if so
-    const query = queryString.parse(window.location.search);
-    if (query.code) {
-      window.opener.postMessage({ code: query.code }, "http://localhost:3000");
-      window.stop();
-    }    
+    if (window.opener) {
+      const query = queryString.parse(window.location.search);
+      if (query.code) {
+        window.opener.postMessage({ code: query.code }, "http://localhost:3000");
+        window.stop();
+      }
+    }
 
     // proceed as usual by pulling token from localstorage and/or setting state
     const token = localStorage.getItem('token');

@@ -1,3 +1,5 @@
+require('dotenv').load();
+
 const express = require('express');
 const db = require('./db');
 

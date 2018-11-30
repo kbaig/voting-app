@@ -35,8 +35,6 @@ userSchema.statics.githubUpdateOrCreate = async function (user) {
     }
 }
 
-
-
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

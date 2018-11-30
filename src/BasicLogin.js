@@ -37,7 +37,7 @@ class BasicLogin extends Component {
 
         // send form to server and receive back either error or token
         try {
-            const response = await fetch('http://localhost:3001/api/auth/login', {
+            const response = await fetch('http://localhost:3001/api/auth/basic/login', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ username, password })

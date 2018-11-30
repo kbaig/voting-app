@@ -55,7 +55,7 @@ class SignUpForm extends Component {
 
         // send form to server and receive back either form parsing error or token
         try {
-            const response = await fetch('http://localhost:3001/api/auth/signup', {
+            const response = await fetch('http://localhost:3001/api/auth/basic/signup', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ name, email, username, password, confirm_password })

@@ -1,10 +1,10 @@
 const express = require('express');
-const ObjectId = require('mongoose').Types.ObjectId;
-
-const Poll = require('../../db/schema/poll');
-
 const router = express.Router();
 const jsonBodyMiddleware = express.json();
+
+const ObjectId = require('mongoose').Types.ObjectId;
+
+const Poll = require('../../schema/poll');
 
 // get the polls
 router.get('/', async (req, res) => {
@@ -38,6 +38,8 @@ router.get('/user/:id', async (req, res) => {
     }
 });
 
+
+// TODO: add form validation and authentication protection
 // create a poll
 router.post('/', jsonBodyMiddleware, async (req, res) => {
     const recievedPoll = req.body;
@@ -53,7 +55,8 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
     }
 });
 
-// delete a poll and return it
+// TODO: add authentication protection
+// delete a poll
 router.delete('/:pollId', async (req, res) => {
     const { pollId } = req.params;
 
@@ -87,6 +90,7 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
 
 });
 
+// TODO: add form validation and authentication protection
 // add an option to a poll
 router.post('/add-option/:pollId', async (req, res) => {
     const pollId = ObjectId(req.params.pollId);
