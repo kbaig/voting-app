@@ -48,6 +48,7 @@ class BasicLogin extends Component {
             if (error) {
                 console.log('login form error:', error)
             } else {
+                console.log(token);
                 this.props.login(token);
             }
 

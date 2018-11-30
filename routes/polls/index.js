@@ -6,6 +6,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 const Poll = require('../../schema/poll');
 
+const { ensureValidToken } = require('../../utils/jwt');
+
 // get the polls
 router.get('/', async (req, res) => {
     try {
@@ -28,11 +30,13 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         res.json({ error });
     }
+
 });
 
 // get all polls created by a specific user
 router.get('/user/:id', async (req, res) => {
     const creator_id = ObjectId(req.params.id);
+
     try {
         const unformattedPolls = await Poll.find({ creator_id });
         const polls = unformattedPolls.map(poll => poll.format());
@@ -40,18 +44,20 @@ router.get('/user/:id', async (req, res) => {
     } catch (error) {
         res.json({ error });
     }
+
 });
 
-
-// TODO: add form validation and authentication protection
-// TODO: add attribution for created polls
+// TODO: add form validation
 // create a poll
-router.post('/', jsonBodyMiddleware, async (req, res) => {
+router.post('/', ensureValidToken, jsonBodyMiddleware, async (req, res) => {
     const recievedPoll = req.body;
 
-    // shape data into how schema expects it
+    // add creator_id
+    recievedPoll.creator_id = req.user.id;
+
+    // shape options into how schema expects it
     recievedPoll.options = recievedPoll.options.map(o => ({ name: o }));
-   
+    
     try {
         const unformattedPoll = await Poll.create(recievedPoll);
         const poll = unformattedPoll.format();
@@ -59,15 +65,17 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
     } catch (error) {
         res.json({ error });
     }
+
 });
 
-// TODO: add authentication protection
 // delete a poll
-router.delete('/:pollId', async (req, res) => {
-    const { pollId } = req.params;
+router.delete('/:pollId', ensureValidToken, async (req, res) => {
+    console.log(req.user);
+    const _id = ObjectId(req.params.pollId);
+    const creator_id = ObjectId(req.user.id);
 
     try {
-        const unformattedPoll = await Poll.findByIdAndDelete(ObjectId(pollId));
+        const unformattedPoll = await Poll.findOneAndDelete({ _id, creator_id });
         const poll = unformattedPoll.format();
         res.json({ poll });
     } catch (error) {
@@ -76,6 +84,7 @@ router.delete('/:pollId', async (req, res) => {
     
 });
 
+// TODO: do something about infinite voting
 // vote
 router.post('/vote/:pollId/:optionId', async (req, res) => {
     const pollId = ObjectId(req.params.pollId);
@@ -98,9 +107,10 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
 
 });
 
-// TODO: add form validation and authentication protection
+// TODO: add form validation
 // add an option to a poll
-router.post('/add-option/:pollId', async (req, res) => {
+router.post('/add-option/:pollId', ensureValidToken, async (req, res) => {
+    console.log('req.user:', req.user);
     const pollId = ObjectId(req.params.pollId);
     const { option } = req.query;
 

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const createToken = require('../utils/createToken');
+const { createToken } = require('../utils/jwt');
 
 const userSchema = new mongoose.Schema({
     name: String,
@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     github_login: String
 });
 
-userSchema.methods.formatAndTokenize = function () {
+userSchema.methods.formatAndTokenize = function (callback) {
     const payload = this.toObject();
 
     // rename _id field
@@ -22,10 +22,8 @@ userSchema.methods.formatAndTokenize = function () {
     delete payload.encrypted_password;
     delete payload.__v;
 
-    console.log('formatted user:', payload);
-
-    // create token and return
-    return createToken(payload);
+    // create token using payload and supplied callback
+    createToken(payload, callback);
 };
 
 userSchema.statics.githubUpdateOrCreate = async function (user) {

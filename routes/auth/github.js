@@ -50,12 +50,16 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
         } = userData;
         const user = await User.githubUpdateOrCreate({ github_id, github_login, name, email, avatar });
         
-        // format and create jwt
-        const token = user.formatAndTokenize();
-        console.log('token:', token);
-
-        // send jwt as response
-        res.json({ token });
+        // format, tokenize, and send
+        user.formatAndTokenize((error, token) => {
+            if (error) {
+                console.log('error:', error);
+                res.json({ error });
+            } else {
+                console.log('token:', token);
+                res.json({ token });
+            }
+        });
     } catch (error) {
         console.log('error:', error);
         res.json({ error });
