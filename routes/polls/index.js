@@ -9,21 +9,24 @@ const Poll = require('../../schema/poll');
 // get the polls
 router.get('/', async (req, res) => {
     try {
-        const polls = await Poll.find({});
-        res.json(polls);
-    } catch (err) {
-        res.json(err);
+        const unformattedPolls = await Poll.find({});
+        const polls = unformattedPolls.map(poll => poll.format());
+        res.json({ polls });
+    } catch (error) {
+        res.json({ error });
     }    
 });
 
 // get a specific poll
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
+
     try {
-        const poll = await Poll.findById(id);
-        res.json(poll);
-    } catch (err) {
-        res.json(err);
+        const unformattedPoll = await Poll.findById(id);
+        const poll = unformattedPoll.format();
+        res.json({ poll });
+    } catch (error) {
+        res.json({ error });
     }
 });
 
@@ -31,15 +34,17 @@ router.get('/:id', async (req, res) => {
 router.get('/user/:id', async (req, res) => {
     const creator_id = ObjectId(req.params.id);
     try {
-        const polls = await Poll.find({ creator_id });
-        res.json(polls);
-    } catch (err) {
-        res.json(err);
+        const unformattedPolls = await Poll.find({ creator_id });
+        const polls = unformattedPolls.map(poll => poll.format());
+        res.json({ polls });
+    } catch (error) {
+        res.json({ error });
     }
 });
 
 
 // TODO: add form validation and authentication protection
+// TODO: add attribution for created polls
 // create a poll
 router.post('/', jsonBodyMiddleware, async (req, res) => {
     const recievedPoll = req.body;
@@ -48,10 +53,11 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
     recievedPoll.options = recievedPoll.options.map(o => ({ name: o }));
    
     try {
-        const poll = await Poll.create(recievedPoll);
-        res.json(poll);
-    } catch (err) {
-        res.json(err);
+        const unformattedPoll = await Poll.create(recievedPoll);
+        const poll = unformattedPoll.format();
+        res.json({ poll });
+    } catch (error) {
+        res.json({ error });
     }
 });
 
@@ -61,10 +67,11 @@ router.delete('/:pollId', async (req, res) => {
     const { pollId } = req.params;
 
     try {
-        const poll = await Poll.findByIdAndDelete(ObjectId(pollId));
-        res.json(poll);
-    } catch (err) {
-        res.json(error);
+        const unformattedPoll = await Poll.findByIdAndDelete(ObjectId(pollId));
+        const poll = unformattedPoll.format();
+        res.json({ poll });
+    } catch (error) {
+        res.json({ error });
     }
     
 });
@@ -75,7 +82,7 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
     const optionId = ObjectId(req.params.optionId);
 
     try {
-        const poll = await Poll.findOneAndUpdate(
+        const unformattedPoll = await Poll.findOneAndUpdate(
             { _id: pollId },
             { $inc: { "options.$[option].votes": 1 } },
             {
@@ -83,9 +90,10 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
                 new: true
             }
         );
-        res.json(poll);
-    } catch (err) {
-        res.json(err);
+        const poll = unformattedPoll.format();
+        res.json({ poll });
+    } catch (error) {
+        res.json({ error });
     }
 
 });
@@ -97,14 +105,15 @@ router.post('/add-option/:pollId', async (req, res) => {
     const { option } = req.query;
 
     try {
-        const poll = await Poll.findOneAndUpdate(
+        const unformattedPoll = await Poll.findOneAndUpdate(
             { _id: pollId },
             { $push: { options: { name: option } } },
             { new: true }
         );
-        res.json(poll);
-    } catch (err) {
-        res.json(err);
+        const poll = unformattedPoll.format();
+        res.json({ poll });
+    } catch (error) {
+        res.json({ error });
     }
 
 });

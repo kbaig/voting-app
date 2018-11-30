@@ -35,7 +35,7 @@ class App extends Component {
     this.state = {
       isAuthenticated: tokenExists,
       token: tokenExists ? token : '',
-      user: tokenExists ? this.tokenToPayload(token): {}
+      user: tokenExists ? this.tokenToUser(token): {}
     };
   }
 
@@ -51,17 +51,14 @@ class App extends Component {
   }
 
   // parse token and return formatted payload
-  tokenToPayload = token => {
-    const unformattedPayload = JSON.parse(atob(token.match(/\.(\w+)\./)[1]));
-    const { _id: id, github_id, github_login, name, email, avatar } = unformattedPayload;
-
-    return { id, github_id, github_login, name, email, avatar };
-  }
+  tokenToUser = token => JSON.parse(atob(token.match(/\.(\w+)\./)[1]));
 
   login = token => {
     localStorage.setItem('token', token);
 
-    const user = this.tokenToPayload(token);   
+    const user = this.tokenToUser(token);   
+
+    console.log('logged in user', user);
 
     this.setState({
       isAuthenticated: true,

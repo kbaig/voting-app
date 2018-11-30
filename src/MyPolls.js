@@ -13,7 +13,7 @@ class MyPolls extends Component {
         const { id } = this.props.user;
         try {
             const response = await fetch(`http://localhost:3001/api/polls/user/${id}`);
-            const polls = await response.json();
+            const { polls } = await response.json();
             this.setState({ polls });            
         } catch (error) {
             console.log(error);

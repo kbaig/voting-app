@@ -7,8 +7,7 @@ const fetch = require('node-fetch');
 
 const User = require('../../schema/user');
 
-const GitHubConfig = require('./utils/github-config');
-const createToken = require('./utils/createToken');
+const GitHubConfig = require('../../config/github-config');
 
 // begin github auth process
 router.get('/', (req, res) => {
@@ -17,7 +16,7 @@ router.get('/', (req, res) => {
         redirect_uri: GitHubConfig.callbackURL,
         scope: GitHubConfig.scope
     });
-    res.redirect(`https://github.com/login/oauth/authorize?${query}`)
+    res.redirect(`https://github.com/login/oauth/authorize?${query}`);
 });
 
 // use github login code to get user profile and return jwt
@@ -49,18 +48,17 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
             email,
             avatar_url: avatar
         } = userData;
-        const payloadDoc = await User.githubUpdateOrCreate({ github_id, github_login, name, email, avatar });
+        const user = await User.githubUpdateOrCreate({ github_id, github_login, name, email, avatar });
         
-        // create jwt
-        const payload = payloadDoc.toObject();
-        const token = createToken(payload);
-        console.log('token: ', token);
+        // format and create jwt
+        const token = user.formatAndTokenize();
+        console.log('token:', token);
 
         // send jwt as response
-        res.json(token);
+        res.json({ token });
     } catch (error) {
         console.log('error:', error);
-        res.json('there was an error');
+        res.json({ error });
     }
 });
 

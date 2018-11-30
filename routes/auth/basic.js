@@ -4,8 +4,8 @@ const jsonBodyMiddleware = express.json();
 
 const User = require('../../schema/user');
 
-const createToken = require('./utils/createToken');
-const { encrypt, comparePasswords } = require('./utils/encryption');
+const createToken = require('../../utils/createToken');
+const { encrypt, comparePasswords } = require('../../utils/encryption');
 
 // TODO: add form validation
 // process sign up form
@@ -25,9 +25,9 @@ router.post('/signup', jsonBodyMiddleware, async (req, res) => {
         // create account
         const user = await User.create({ name, email, username, encrypted_password });
 
-        // create jwt
-        const payload = user.toObject();
-        const token = createToken(payload);
+        // format and create jwt
+        const token = user.formatAndTokenize();
+        console.log('token:', token);
 
         // send jwt as response
         res.json({ token });
@@ -46,15 +46,15 @@ router.post('/login', jsonBodyMiddleware, async (req, res) => {
         // attempt to get user
         const user = await User.findOne({ username });
         const userExists = !!user;
-
+        
         if (userExists) {
             // compare passwords
             const passwordsMatch = await comparePasswords(password, user.encrypted_password);
 
             if (passwordsMatch) {
-                // create jwt
-                const payload = user.toObject();
-                const token = createToken(payload);
+                // format and create jwt
+                const token = user.formatAndTokenize();
+                console.log('token:', token);
 
                 // send jwt as response
                 return res.json({ token });
@@ -62,6 +62,7 @@ router.post('/login', jsonBodyMiddleware, async (req, res) => {
         }
 
         // respond with error if user doesn't exist and/or passwords don't match
+        console.log('error:', 'invalid username or password');
         res.json({ error: 'invalid username or password' });
 
     } catch (error) {
