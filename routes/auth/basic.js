@@ -5,10 +5,11 @@ const jsonBodyMiddleware = express.json();
 const User = require('../../schema/user');
 
 const { encrypt, comparePasswords } = require('../../utils/encryption');
+const validate = require('../validate');
 
-// TODO: add form validation
 // process sign up form
-router.post('/signup', jsonBodyMiddleware, async (req, res) => {
+router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) => {
+    // also requires a passwordConfirmation field, but that is used in form validation
     const { name, email, username, password } = req.body;
 
     try {
@@ -41,9 +42,8 @@ router.post('/signup', jsonBodyMiddleware, async (req, res) => {
     }
 });
 
-// TODO: add form validation
 // log user in
-router.post('/login', jsonBodyMiddleware, async (req, res) => {
+router.post('/login', jsonBodyMiddleware, validate('login'), async (req, res) => {
     const { username, password } = req.body;
 
     try {

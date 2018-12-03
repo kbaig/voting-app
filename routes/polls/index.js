@@ -7,6 +7,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const Poll = require('../../schema/poll');
 
 const { ensureValidToken } = require('../../utils/jwt');
+const validate = require('../validate');
 
 // get the polls
 router.get('/', async (req, res) => {
@@ -47,9 +48,8 @@ router.get('/user/:id', async (req, res) => {
 
 });
 
-// TODO: add form validation
 // create a poll
-router.post('/', ensureValidToken, jsonBodyMiddleware, async (req, res) => {
+router.post('/', ensureValidToken, jsonBodyMiddleware, validate('createPoll'), async (req, res) => {
     const recievedPoll = req.body;
 
     // add creator_id
@@ -84,7 +84,7 @@ router.delete('/:pollId', ensureValidToken, async (req, res) => {
     
 });
 
-// TODO: do something about infinite voting
+// TODO: do something about infinite voting (nonce)
 // vote
 router.post('/vote/:pollId/:optionId', async (req, res) => {
     const pollId = ObjectId(req.params.pollId);
@@ -107,9 +107,8 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
 
 });
 
-// TODO: add form validation
 // add an option to a poll
-router.post('/add-option/:pollId', ensureValidToken, async (req, res) => {
+router.post('/add-option/:pollId', ensureValidToken, validate('addPollOption'), async (req, res) => {
     console.log('req.user:', req.user);
     const pollId = ObjectId(req.params.pollId);
     const { option } = req.query;
