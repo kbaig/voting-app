@@ -1,11 +1,12 @@
 const { body, query, validationResult } = require('express-validator/check');
 
+// TODO: add http status code 422
 // middleware for throwing validation errors
 const handleValidation = (req, res, next) => {
     const errors = validationResult(req);
     const errorsExist = !errors.isEmpty();
 
-    if (errorsExist) res.json({ errors: errors.array({ onlyFirstError: true }) });
+    if (errorsExist) res.status(422).json({ errors: errors.array({ onlyFirstError: true }) });
 
     next();
 };

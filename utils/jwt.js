@@ -15,7 +15,7 @@ const ensureValidToken = (req, res, next) => {
     const authHeader = req.get('Authorization');
     const authHeaderMissing = !authHeader;
 
-    if (authHeaderMissing) return res.sendStatus(401);
+    if (authHeaderMissing) return res.status(401).json({ error: 'Unauthorized' });
 
     const token = authHeader.match(/^Bearer (.+)$/)[1];
 
