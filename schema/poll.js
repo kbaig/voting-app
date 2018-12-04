@@ -32,7 +32,7 @@ pollSchema.methods.format = function () {
         return option;
     });
 
-    console.log('formmated poll:', poll);
+    console.log('formatted poll:', poll);
     return poll;
 };
 

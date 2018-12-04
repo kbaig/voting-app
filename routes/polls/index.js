@@ -16,10 +16,12 @@ router.get('/', async (req, res) => {
         const polls = unformattedPolls.map(poll => poll.format());
         res.json({ polls });
     } catch (error) {
-        res.json({ error });
+        console.log({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }    
 });
 
+// TODO: validate id as objectid and consider case where no poll for given id
 // get a specific poll
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
@@ -29,11 +31,13 @@ router.get('/:id', async (req, res) => {
         const poll = unformattedPoll.format();
         res.json({ poll });
     } catch (error) {
-        res.json({ error });
+        console.log({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 
 });
 
+// TODO: validate id as objectid and consider case where no user for given id
 // get all polls created by a specific user
 router.get('/user/:id', async (req, res) => {
     const creator_id = ObjectId(req.params.id);
@@ -43,7 +47,8 @@ router.get('/user/:id', async (req, res) => {
         const polls = unformattedPolls.map(poll => poll.format());
         res.json({ polls });
     } catch (error) {
-        res.json({ error });
+        console.log({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 
 });
@@ -54,20 +59,19 @@ router.post('/', ensureValidToken, jsonBodyMiddleware, validate('createPoll'), a
 
     // add creator_id
     recievedPoll.creator_id = req.user.id;
-
-    // shape options into how schema expects it
-    recievedPoll.options = recievedPoll.options.map(o => ({ name: o }));
     
     try {
         const unformattedPoll = await Poll.create(recievedPoll);
         const poll = unformattedPoll.format();
         res.json({ poll });
     } catch (error) {
-        res.json({ error });
+        console.log({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 
 });
 
+// TODO: validate pollid as objectid and consider what happens when poll doesn't exist with given pollid
 // delete a poll
 router.delete('/:pollId', ensureValidToken, async (req, res) => {
     console.log(req.user);
@@ -79,11 +83,13 @@ router.delete('/:pollId', ensureValidToken, async (req, res) => {
         const poll = unformattedPoll.format();
         res.json({ poll });
     } catch (error) {
-        res.json({ error });
+        console.log({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
     
 });
 
+// TODO: validate pollid and optionid as objectid and case for nonexistence
 // TODO: do something about infinite voting (nonce)
 // vote
 router.post('/vote/:pollId/:optionId', async (req, res) => {
@@ -102,11 +108,13 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
         const poll = unformattedPoll.format();
         res.json({ poll });
     } catch (error) {
-        res.json({ error });
+        console.log('error:', error);
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 
 });
 
+// TOOD: validate objectids and make sure poll exists
 // add an option to a poll
 router.post('/add-option/:pollId', ensureValidToken, validate('addPollOption'), async (req, res) => {
     console.log('req.user:', req.user);
@@ -122,7 +130,8 @@ router.post('/add-option/:pollId', ensureValidToken, validate('addPollOption'), 
         const poll = unformattedPoll.format();
         res.json({ poll });
     } catch (error) {
-        res.json({ error });
+        console.log('error:', error);
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 
 });

@@ -5,7 +5,7 @@ class VoteForm extends Component {
         super(props);
 
         this.state = {
-            optionId: props.options[0]._id
+            optionId: props.options[0].id
         };
     }
 
@@ -25,7 +25,7 @@ class VoteForm extends Component {
         return (
             <form onSubmit={ handleSubmit }>
                 <select value={ optionId } onChange={ handleChange }>
-                    { options.map(o => <option key={ o._id } value={ o._id }>{ o.name }</option>) }
+                    { options.map(o => <option key={ o.id } value={ o.id }>{ o.name }</option>) }
                 </select>
                 <input type='submit' />
             </form>

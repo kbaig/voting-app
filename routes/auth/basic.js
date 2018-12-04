@@ -38,7 +38,7 @@ router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) 
 
     } catch (error) {
         console.log('error:', error);
-        res.json({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 });
 
@@ -79,7 +79,7 @@ router.post('/login', jsonBodyMiddleware, validate('login'), async (req, res) =>
 
     } catch (error) {
         console.log('error:', error);
-        res.json({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 });
 

@@ -17,16 +17,21 @@ const ensureValidToken = (req, res, next) => {
 
     if (authHeaderMissing) return res.status(401).json({ error: 'Unauthorized' });
 
-    const token = authHeader.match(/^Bearer (.+)$/)[1];
+    const tokenMatch = authHeader.match(/^Bearer (.+)$/);
+    const tokenIncorrectlyFormatted = !tokenMatch;
 
-    jwt.verify(token, TOKEN_SECRET, (err, payload) => {
-        if (err) {
+    if (tokenIncorrectlyFormatted) return res.status(401).json({ error: 'Unauthorized' });
+
+    const token = tokenMatch[1];
+
+    jwt.verify(token, TOKEN_SECRET, (error, payload) => {
+        if (error) {
             // respond with error
-            return res.sendStatus(401);
-        } else {
-            // append user to req
-            req.user = payload;            
+            res.status(401).json({ error: 'Unauthorized' });
         }
+
+        // append user to req and move to next middleware
+        req.user = payload;            
         next();
     });
 }

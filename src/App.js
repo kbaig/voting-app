@@ -34,20 +34,9 @@ class App extends Component {
 
     this.state = {
       isAuthenticated: tokenExists,
-      token: tokenExists ? token : '',
-      user: tokenExists ? this.tokenToUser(token): {}
+      token: tokenExists ? token : null,
+      user: tokenExists ? this.tokenToUser(token): null
     };
-  }
-
-  async componentDidMount () {
-    try {
-      const response = await fetch('http://localhost:3001/api/polls');
-      const polls = await response.json();
-    
-      this.setState({ polls });
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   // parse token and return formatted payload
@@ -72,13 +61,13 @@ class App extends Component {
 
     this.setState({
       isAuthenticated: false,
-      token: '',
-      user: {}
+      token: null,
+      user: null
     });
   }
 
   render() {
-    const { isAuthenticated, user } = this.state;
+    const { isAuthenticated, token, user } = this.state;
     const { login, logout } = this;
 
     return <Router>
@@ -108,10 +97,24 @@ class App extends Component {
         <Route path='/polls/:id/' render={ props => <Poll
           { ...props }
           isAuthenticated={ isAuthenticated }
+          token={ token }
+          logout={ logout }
           /> }
         />
-        <ProtectedRoute path='/my-polls/' isAuthenticated={ isAuthenticated } component={ MyPolls } user={ user } />
-        <ProtectedRoute path='/create/' isAuthenticated={ isAuthenticated } component={ CreatePollForm } />
+        <ProtectedRoute path='/my-polls/'
+          isAuthenticated={ isAuthenticated }
+          token={ token }
+          logout={ logout }
+          component={ MyPolls }
+          user={ user }
+        />
+        <ProtectedRoute
+          path='/create/'
+          isAuthenticated={ isAuthenticated }
+          token={ token }
+          logout={ logout }
+          component={ CreatePollForm }
+        />
         <ProtectedAgainstAuthRoute
           path='/login/'
           isAuthenticated={ isAuthenticated }
@@ -124,7 +127,7 @@ class App extends Component {
           isAuthenticated={ isAuthenticated }
           login={ login }
         />
-
+        
       </div>
     </Router>;
   }

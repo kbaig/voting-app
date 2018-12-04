@@ -30,6 +30,7 @@ class CreatePollForm extends Component {
         this.setState(prevState => ({ options: prevState.options.length <= 2 ? prevState.options : prevState.options.slice(0, prevState.options.length - 1) }));
     }
 
+    // TODO: front end validation
     handleSubmit = e => {
         e.preventDefault();
         let { name, options } = this.state;
@@ -51,18 +52,28 @@ class CreatePollForm extends Component {
         }
     }
 
-    addPoll = async poll => {
+    // TODO: redirect to the new poll, or some other relevant location
+    addPoll = async newPoll => {
         try {
             const response = await fetch('http://localhost:3001/api/polls', {
                 method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify(poll)
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${this.props.token}`
+                },
+                body: JSON.stringify(newPoll)
             });
-            const jsonResponse = await response.json();
+
+            if (response.ok) {
+                const { poll } = await response.json();
+                console.log({ poll });
+            } else {
+                const { error } = await response.json();
+                console.log({ error });
+            }
     
-            console.log('created poll:', jsonResponse);
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            console.log({ error });
         }
     }
 

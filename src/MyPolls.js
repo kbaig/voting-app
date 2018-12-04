@@ -13,32 +13,48 @@ class MyPolls extends Component {
         const { id } = this.props.user;
         try {
             const response = await fetch(`http://localhost:3001/api/polls/user/${id}`);
-            const { polls } = await response.json();
-            this.setState({ polls });            
+
+            if (response.ok) {
+                const { polls } = await response.json();
+                this.setState({ polls });
+            } else {
+                const { error } = await response.json();
+                console.log({ error });
+            }
+
         } catch (error) {
-            console.log(error);
+            console.log({ error });
         }
     }
 
-    removePoll = async pollId => {
-        console.log('poll id: ', pollId);
+    removePoll = async id => {
         try {
-            const response = await fetch(`http://localhost:3001/api/polls/${pollId}`, { method: 'DELETE' });
-            const deletedPoll = await response.json();
-            this.setState(prevState => ({
-                ...prevState,
-                polls: prevState.polls.filter(poll => poll._id !== deletedPoll._id)
-            }));
+            const response = await fetch(`http://localhost:3001/api/polls/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${this.props.token}`}
+            });
+
+            if (response.ok) {
+                const deletedPoll = await response.json();
+                this.setState(prevState => ({
+                    ...prevState,
+                    polls: prevState.polls.filter(poll => poll._id !== deletedPoll._id)
+                }));
+            } else {
+                const { error } = await response.json();
+                console.log({ error });
+            }
+            
         } catch (error) {
-            console.log(error);
+            console.log({ error });
         }
     }
 
     render () {
         const polls = this.state.polls.map(poll => <MyPoll
-            key={ poll._id }
+            key={ poll.id }
             poll={ poll }
-            removePoll={ () => this.removePoll(poll._id) }
+            removePoll={ () => this.removePoll(poll.id) }
          />);
 
         return (

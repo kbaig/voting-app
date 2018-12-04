@@ -62,7 +62,7 @@ router.post('/', jsonBodyMiddleware, async (req, res) => {
         });
     } catch (error) {
         console.log('error:', error);
-        res.json({ error });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 });
 

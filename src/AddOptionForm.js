@@ -17,7 +17,7 @@ class AddOptionForm extends Component {
         const option = this.state.option.trim();
 
         if (option.length === 0) {
-            console.log(`an empty string won't work!`);
+            console.log({ error: `an empty string won't work!` });
         } else {
             this.props.addOption(option);
         }

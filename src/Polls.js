@@ -14,18 +14,23 @@ class Polls extends Component {
   async componentDidMount () {
     try {
       const response = await fetch('http://localhost:3001/api/polls');
-      const polls = await response.json();
-    
-      this.setState({ polls });
-    } catch (err) {
-      console.log(err);
+      const { error, polls } = await response.json();
+      
+      if (error) {
+        console.log({ error });
+      } else {
+        this.setState({ polls });
+      }      
+    } catch (error) {
+      console.log({ error });
     }
   }
 
   render () {
+    console.log(this.state);
     const polls = this.state.polls.map(poll => {
-      const { _id, name } = poll;
-      return (<Link key={ _id } to={ `/polls/${_id}` } >{ name }</Link>);
+      const { id, name } = poll;
+      return (<Link key={ id } to={ `/polls/${id}` } >{ name }</Link>);
     });
 
     return (

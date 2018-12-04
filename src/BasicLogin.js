@@ -28,6 +28,7 @@ class BasicLogin extends Component {
         });
     }
 
+    // TODO: front end validation
     handleSubmit = async e => {
         e.preventDefault();
 
@@ -42,18 +43,17 @@ class BasicLogin extends Component {
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
-            const responseData = await response.json();
-            const { error, token } = responseData;
 
-            if (error) {
-                console.log('login form error:', error)
+            if (response.ok) {
+                const { token } = await response.json();
+                this.props.login({ token });
             } else {
-                console.log(token);
-                this.props.login(token);
+                const { error } = await response.json();
+                console.log({ error });
             }
 
         } catch (error) {
-            console.log(error);
+            console.log({ error });
         }
     }
 

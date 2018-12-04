@@ -10,7 +10,7 @@ class SignUpForm extends Component {
                 email: '',
                 username: '',
                 password: '',
-                confirm_password: ''
+                passwordConfirmation: ''
             }
         };
     }
@@ -31,15 +31,16 @@ class SignUpForm extends Component {
         });
     }
 
+    // TODO: front end validation
     // validate and submit
     handleSubmit = async e => {
         e.preventDefault();
 
         const { form } = this.state;
 
-        const { password, confirm_password } = form;
+        const { password, passwordConfirmation } = form;
 
-        if (password !== confirm_password) {
+        if (password !== passwordConfirmation) {
             return console.log(`passwords don't match`);
         }
 
@@ -51,32 +52,31 @@ class SignUpForm extends Component {
             return console.log('no empty fields!');
         }
 
-        console.log('submitting: ', { name, email, username, password, confirm_password });
+        console.log('submitting:', { name, email, username, password, passwordConfirmation });
 
-        // send form to server and receive back either form parsing error or token
         try {
             const response = await fetch('http://localhost:3001/api/auth/basic/signup', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ name, email, username, password, confirm_password })
+                body: JSON.stringify({ name, email, username, password, passwordConfirmation })
             });
-            const responseData = await response.json();
-            const { error, token } = responseData;
 
-            if (error) {
-                console.log('sign up form error:', error)
-            } else {
+            if (response.ok) {
+                const { token } = await response.json();
                 this.props.login(token);
+            } else {
+                const { error } = await response.json();
+                console.log({ error });
             }
 
         } catch (error) {
-            console.log(error);
+            console.log({ error });
         }
     }
 
     render () {
         const { form } = this.state;
-        const { name, email, username, password, confirm_password } = form;
+        const { name, email, username, password, passwordConfirmation } = form;
         const { handleChange, handleSubmit } = this;
         return ( 
             <form onSubmit={ handleSubmit }>
@@ -85,7 +85,7 @@ class SignUpForm extends Component {
                 <label>Email <input type='email' value={ email } onChange={ e => handleChange('email', e) } /></label>
                 <label>Username <input type='text' value={ username } onChange={ e => handleChange('username', e) } /></label>
                 <label>Password <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
-                <label>Confirm Password <input type='password' value={ confirm_password } onChange={ e => handleChange('confirm_password', e) } /></label>
+                <label>Confirm Password <input type='password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } /></label>
                 <input type='Submit' />
             </form>
         );

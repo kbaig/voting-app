@@ -29,7 +29,9 @@ const validateMethod = method => {
                         .trim()
                         .not().isEmpty().withMessage('Options cannot contain nonempty strings'),
                     body('options')
-                        .custom(options => options.length >= 2).withMessage('There must be at least two options')
+                        .custom(options => options.length >= 2).withMessage('There must be at least two options'),
+                    body('options.*')
+                        .customSanitizer(option => ({ name: option }) )                        
             ];
         case 'addPollOption':
             return [

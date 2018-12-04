@@ -14,32 +14,56 @@ class Poll extends Component {
         try {
             const { id } = this.props.match.params;
             const response = await fetch(`http://localhost:3001/api/polls/${id}`);
-            const poll = await response.json();
-            this.setState({ poll });
-        } catch (err) {
-            console.log(err);
-        }         
+            const { error, poll } = await response.json();
+            if (error) {
+                console.log({ error });
+            } else {
+                console.log(poll);
+                this.setState({ poll });
+            }
+        } catch (error) {
+            console.log({ error });
+        }
     }
 
     vote = async (optionId) => {
-        const pollId = this.state.poll._id;
+        const pollId = this.state.poll.id;
         try {
-            const response = await fetch(`http://localhost:3001/api/polls/vote/${pollId}/${optionId}`, { method: 'POST' });
-            const poll = await response.json();
-            this.setState({ poll });
-        } catch (err) {
-            console.log(err);
+            const response = await fetch(`http://localhost:3001/api/polls/vote/${pollId}/${optionId}`, {
+                method: 'POST'
+            });
+            
+            if (response.ok) {
+                const { poll } = await response.json();
+                this.setState({ poll });
+            } else {
+                const { error } = await response.json();
+                console.log({ error });
+            }
+
+        } catch (error) {
+            console.log({ error });
         }
     }
 
     addOption = async option => {
-        const { _id } = this.state.poll;
+        const { id } = this.state.poll;
         try {
-            const response = await fetch(`http://localhost:3001/api/polls/add-option/${_id}?option=${option}`, { method: 'POST' });
-            const poll = await response.json();
-            this.setState({ poll });
-        } catch (err) {
-            console.log(err);
+            const response = await fetch(`http://localhost:3001/api/polls/add-option/${id}?option=${option}`,{
+                method: 'POST',
+                headers: { Authorization: `Bearer ${this.props.token}`}
+            });
+
+            if (response.ok) {
+                const { poll } = await response.json();
+                this.setState({ poll });
+            } else {
+                const { error } = await response.json();
+                console.log({ error });
+            }
+            
+        } catch (error) {
+            console.log({ error });
         }
     }
 
@@ -53,9 +77,9 @@ class Poll extends Component {
                 { poll.name }
                 <div>
                     Options:
-                    { poll.options.map(o => <div key={ o._id }>{ o.name }: { o.votes }</div>) }
+                    { poll.options.map(o => <div key={ o.id }>{ o.name }: { o.votes }</div>) }
                 </div>
-                <VoteForm options={ poll.options } pollId={ poll._id } vote={ vote } />
+                <VoteForm options={ poll.options } pollId={ poll.id } vote={ vote } />
                 { isAuthenticated && <AddOptionForm addOption={ addOption } /> }
             </div>
         );
