@@ -86,16 +86,19 @@ class CreatePollForm extends Component {
         );
 
         return (
-        <form onSubmit={ handleSubmit }>
-            <h2>Add a poll</h2>
-            <label>Name: <input type='text' name='name' value={ name } onChange={ handleNameChange }/></label>
+            <>
+                <h1>Create a poll</h1>
+                <form className='Form' onSubmit={ handleSubmit }>
+                
+                    <label>Name: <input type='text' name='name' value={ name } onChange={ handleNameChange }/></label>
 
-            Options:
-            { optionFields }
-            <input type='button' onClick={ addOption } value='Add Option'></input>
-            <input type='button' onClick={ removeOption } value='Remove Option'></input>
-            <input type='submit' />
-        </form>
+                    
+                    <label>Options: { optionFields }</label>
+                    <input type='button' onClick={ addOption } value='Add Option'></input>
+                    <input type='button' onClick={ removeOption } value='Remove Option'></input>
+                    <input type='submit' />
+                </form>
+            </>
         );
     }
 }

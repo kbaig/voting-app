@@ -58,10 +58,12 @@ class MyPolls extends Component {
          />);
 
         return (
-            <div>
-                { polls }
-                <div>Soon I'll be able to see my polls' aggregate results.</div>
-            </div>
+            <>
+                <h1>My Polls</h1>
+                <ul className='MyPolls'>
+                    { polls }
+                </ul>
+            </>
         );
     }
 }

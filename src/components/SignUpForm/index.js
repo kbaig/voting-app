@@ -78,16 +78,19 @@ class SignUpForm extends Component {
         const { form } = this.state;
         const { name, email, username, password, passwordConfirmation } = form;
         const { handleChange, handleSubmit } = this;
-        return ( 
-            <form onSubmit={ handleSubmit }>
-                Sign Up
-                <label>Name <input type='text' value={ name } onChange={ e => handleChange('name', e) } /></label>
-                <label>Email <input type='email' value={ email } onChange={ e => handleChange('email', e) } /></label>
-                <label>Username <input type='text' value={ username } onChange={ e => handleChange('username', e) } /></label>
-                <label>Password <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
-                <label>Confirm Password <input type='password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } /></label>
-                <input type='Submit' />
-            </form>
+        return (
+            <>
+                <h1>Sign Up</h1>
+                <form className='Form' onSubmit={ handleSubmit }>
+                    
+                    <label>Name <input type='text' value={ name } onChange={ e => handleChange('name', e) } /></label>
+                    <label>Email <input type='email' value={ email } onChange={ e => handleChange('email', e) } /></label>
+                    <label>Username <input type='text' value={ username } onChange={ e => handleChange('username', e) } /></label>
+                    <label>Password <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
+                    <label>Confirm Password <input type='password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } /></label>
+                    <input type='Submit' />
+                </form>
+            </> 
         );
     }
 }

@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
 
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import ProtectedRoute from './ProtectedRoute';
-import ProtectedAgainstAuthRoute from './ProtectedAgainstAuthRoute';
+import { Router } from 'react-router-dom';
 
-import Home from './Home';
-import Polls from './Polls';
-import Poll from './Poll';
-import MyPolls from './MyPolls';
-import CreatePollForm from './CreatePollForm';
-import Login from './Login';
-import SignUpForm from './SignUpForm';
+import Nav from './components/Nav';
+import Routes from './components/Routes';
+import Footer from './components/Footer';
 
 import './App.css';
 
@@ -35,17 +29,17 @@ class App extends Component {
     this.state = {
       isAuthenticated: tokenExists,
       token: tokenExists ? token : null,
-      user: tokenExists ? this.tokenToUser(token): null
+      user: tokenExists ? this._tokenToUser(token): null
     };
   }
 
   // parse token and return formatted payload
-  tokenToUser = token => JSON.parse(atob(token.match(/\.(\w+)\./)[1]));
+  _tokenToUser = token => JSON.parse(atob(token.match(/\.(\w+)\./)[1]));
 
   login = token => {
     localStorage.setItem('token', token);
 
-    const user = this.tokenToUser(token);   
+    const user = this._tokenToUser(token);   
 
     console.log('logged in user', user);
 
@@ -70,66 +64,22 @@ class App extends Component {
     const { isAuthenticated, token, user } = this.state;
     const { login, logout } = this;
 
-    return <Router>
-      <div>
+    return (
+      <Router>
+        <div className='App'>
 
-        <nav>
-          <ul>
-            <li><Link to='/'>Home</Link></li>
-            <li><Link to='/polls/'>Polls</Link></li>
-            { isAuthenticated && <li><Link to='/my-polls/'>My Polls</Link></li> }            
-            { isAuthenticated && <li><Link to='/create/'>Create A Poll</Link></li> }
-            { isAuthenticated ?
-              <button onClick={ logout }>Logout</button> :
-              <>
-                <li><Link to='/login/'>Login</Link></li>
-                <li><Link to="/sign-up">Sign Up</Link></li>
-              </>
-            }
-            
-          </ul> 
-        </nav>
+          <Nav isAuthenticated={ isAuthenticated } user={ user } logout={ logout } />
+          <Routes
+            isAuthenticated={ isAuthenticated }
+            token={ token }
+            user={ user }
+            login={ login }
+            logout={ logout }/>
+          <Footer />
 
-        { isAuthenticated && `You are logged in as ${user.name} whose email is ${user.email}.` }
-
-        <Route path='/' exact component={ Home } />
-        <Route path='/polls/' exact component={ Polls } />
-        <Route path='/polls/:id/' render={ props => <Poll
-          { ...props }
-          isAuthenticated={ isAuthenticated }
-          token={ token }
-          logout={ logout }
-          /> }
-        />
-        <ProtectedRoute path='/my-polls/'
-          isAuthenticated={ isAuthenticated }
-          token={ token }
-          logout={ logout }
-          component={ MyPolls }
-          user={ user }
-        />
-        <ProtectedRoute
-          path='/create/'
-          isAuthenticated={ isAuthenticated }
-          token={ token }
-          logout={ logout }
-          component={ CreatePollForm }
-        />
-        <ProtectedAgainstAuthRoute
-          path='/login/'
-          isAuthenticated={ isAuthenticated }
-          component={ Login }
-          login={ login }
-        />
-        <ProtectedAgainstAuthRoute
-          path='/sign-up/'
-          component={ SignUpForm }
-          isAuthenticated={ isAuthenticated }
-          login={ login }
-        />
-        
-      </div>
-    </Router>;
+        </div>
+      </Router>
+    );
   }
 }
 

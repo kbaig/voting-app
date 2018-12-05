@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 class Home extends Component {
     render () {
         return (
-            <div>
+            <header className='Header'>
                 Welcome to the Polling App!
-            </div>
+            </header>
         );
     }
 }

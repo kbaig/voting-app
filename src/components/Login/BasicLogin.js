@@ -40,7 +40,7 @@ class BasicLogin extends Component {
         try {
             const response = await fetch('http://localhost:3001/api/auth/basic/login', {
                 method: 'POST',
-                headers: { 'content-type': 'application/json' },
+                headers: { 'content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
 
@@ -63,11 +63,15 @@ class BasicLogin extends Component {
         const { handleChange, handleSubmit } = this;
 
         return (
-            <form onSubmit={ handleSubmit }>
-                <label>Username: <input value={ username } onChange={ e => handleChange('username', e) } /></label>
-                <label>Password: <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
-                <input type='submit' />
-            </form>
+            <>
+                <h1>Log In</h1>
+                <form className='Form' onSubmit={ handleSubmit }>
+                    <label>Username: <input value={ username } onChange={ e => handleChange('username', e) } /></label>
+                    <label>Password: <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
+                    <input type='submit' />
+                </form>
+            </>
+            
         );
     }
 }

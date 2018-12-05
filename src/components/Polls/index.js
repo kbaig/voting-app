@@ -27,16 +27,18 @@ class Polls extends Component {
   }
 
   render () {
-    console.log(this.state);
     const polls = this.state.polls.map(poll => {
       const { id, name } = poll;
-      return (<Link key={ id } to={ `/polls/${id}` } >{ name }</Link>);
+      return (<li key={ id }><Link to={ `/polls/${id}` } >{ name }</Link></li>);
     });
 
     return (
-      <div>
-        { polls }
-      </div>
+      <>
+        <h1>Polls</h1>
+        <ul className='Polls'>
+          { polls }
+        </ul>
+      </>
     );
   }
 }
