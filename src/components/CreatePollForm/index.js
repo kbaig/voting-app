@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Form from '../../primitives/Form';
+
 class CreatePollForm extends Component {
     constructor () {
         super();
@@ -88,7 +90,7 @@ class CreatePollForm extends Component {
         return (
             <>
                 <h1>Create a poll</h1>
-                <form className='Form' onSubmit={ handleSubmit }>
+                <Form onSubmit={ handleSubmit }>
                 
                     <label>Name: <input type='text' name='name' value={ name } onChange={ handleNameChange }/></label>
 
@@ -97,7 +99,7 @@ class CreatePollForm extends Component {
                     <input type='button' onClick={ addOption } value='Add Option'></input>
                     <input type='button' onClick={ removeOption } value='Remove Option'></input>
                     <input type='submit' />
-                </form>
+                </Form>
             </>
         );
     }

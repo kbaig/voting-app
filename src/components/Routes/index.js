@@ -13,6 +13,8 @@ import CreatePollForm from '../CreatePollForm';
 import Login from '../Login';
 import SignUpForm from '../SignUpForm';
 
+import './Routes.sass';
+
 
 class Main extends Component {
     render () {

@@ -1,0 +1,33 @@
+.MyPolls li
+  margin-bottom: 5px
+  list-style-type: none
+  padding: 10px 15px
+  background: rgba(204, 251, 254, 0.7)
+  border: 1px solid #BBBBBB
+  border-radius: 4px
+  &:last-of-type
+    margin-bottom: 0
+  &:hover
+    background: rgba(204, 251, 254, 1)
+    border: 1px solid #666666
+
+  .top-row
+    display: flex
+    justify-content: space-between
+
+    a
+      margin-right: 10px
+      text-decoration: none
+      color: inherit
+      &:hover
+        text-decoration: underline
+
+  .bottom-row
+    display: flex
+    justify-content: flex-end
+    margin-top: 15px
+  
+    button
+      margin-right: 10px
+      &:last-of-type
+        margin-right: 0

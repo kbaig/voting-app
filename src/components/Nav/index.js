@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 
+import './Nav.sass';
+
 class Nav extends Component {
     render () {
         const { isAuthenticated, user, logout } = this.props;

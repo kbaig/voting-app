@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
+import './Home.sass';
+
 class Home extends Component {
     render () {
         return (
-            <header className='Header'>
+            <header className='Home'>
                 Welcome to the Polling App!
             </header>
         );

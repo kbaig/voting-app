@@ -10,6 +10,7 @@
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.3.12",
     "node-fetch": "^2.3.0",
+    "node-sass": "^4.10.0",
     "query-string": "^6.2.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",

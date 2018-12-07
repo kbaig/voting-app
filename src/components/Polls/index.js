@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 
+import './Polls.sass';
+
 class Polls extends Component {
   constructor () {
     super();

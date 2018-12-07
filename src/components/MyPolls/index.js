@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import MyPoll from './MyPoll';
 
+import './MyPolls.sass';
+
 class MyPolls extends Component {
     constructor () {
         super();

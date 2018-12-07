@@ -7,7 +7,7 @@ import Nav from './components/Nav';
 import Routes from './components/Routes';
 import Footer from './components/Footer';
 
-import './App.css';
+import './App.sass';
 
 class App extends Component {
   constructor () {
