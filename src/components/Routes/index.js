@@ -19,7 +19,7 @@ class Main extends Component {
         const { isAuthenticated, token, login, logout, user } = this.props;
 
         return (
-            <main className='Main'>
+            <main className='Routes'>
                 <Route path='/' exact component={ Home } />
                 <Route path='/polls/' exact component={ Polls } />
                 <Route path='/polls/:id/' render={ props => <Poll

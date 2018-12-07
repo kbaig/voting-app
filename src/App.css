@@ -6,13 +6,10 @@
   box-sizing: border-box;
 }
 
-body {
+.App {
+  min-height: 100vh;
   font-family: 'Roboto', sans-serif;
   color: #0A2463;
-}
-
-#root {
-  min-height: 100vh;
 }
 
 .Nav {
@@ -39,11 +36,11 @@ body {
   text-decoration: underline;
 }
 
-.Main {
+.Routes {
   margin: 60px 40px;
 }
 
-.Main h1 {
+.Routes h1 {
   margin-bottom: 15px;
   font-size: 2rem;
 }

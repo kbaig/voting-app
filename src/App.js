@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
 
-import { Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import Nav from './components/Nav';
 import Routes from './components/Routes';
@@ -74,7 +74,8 @@ class App extends Component {
             token={ token }
             user={ user }
             login={ login }
-            logout={ logout }/>
+            logout={ logout }
+          />
           <Footer />
 
         </div>
