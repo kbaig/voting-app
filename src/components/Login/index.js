@@ -3,13 +3,17 @@ import React, { Component } from 'react';
 import BasicLogin from './BasicLogin';
 import GitHubLogin from './GitHubLogin';
 
+import FormField from '../../primitives/FormField';
+
 class Login extends Component {
     render () {
         const { login } = this.props;
 
         return ( 
             <div>
-                <BasicLogin login={ login } />
+                <FormField>
+                    <BasicLogin login={ login } />
+                </FormField>
                 <GitHubLogin login={ login } />
             </div>
         );

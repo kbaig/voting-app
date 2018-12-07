@@ -5,7 +5,7 @@ const jsonBodyMiddleware = express.json();
 const User = require('../../schema/user');
 
 const { encrypt, comparePasswords } = require('../../utils/encryption');
-const validate = require('../validate');
+const validate = require('../../utils/validate');
 
 // process sign up form
 router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) => {

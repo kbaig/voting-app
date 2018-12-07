@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import Form from '../../primitives/Form';
+import FormField from '../../primitives/FormField';
+
 class SignUpForm extends Component {
     constructor () {
         super();
@@ -81,15 +84,14 @@ class SignUpForm extends Component {
         return (
             <>
                 <h1>Sign Up</h1>
-                <form className='Form' onSubmit={ handleSubmit }>
-                    
-                    <label>Name <input type='text' value={ name } onChange={ e => handleChange('name', e) } /></label>
-                    <label>Email <input type='email' value={ email } onChange={ e => handleChange('email', e) } /></label>
-                    <label>Username <input type='text' value={ username } onChange={ e => handleChange('username', e) } /></label>
-                    <label>Password <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
-                    <label>Confirm Password <input type='password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } /></label>
+                <Form onSubmit={ handleSubmit }>
+                    <FormField><label>Name<input type='text' value={ name } onChange={ e => handleChange('name', e) } /></label></FormField>
+                    <FormField><label>Email<input type='email' value={ email } onChange={ e => handleChange('email', e) } /></label></FormField>
+                    <FormField><label>Username<input type='text' value={ username } onChange={ e => handleChange('username', e) } /></label></FormField>
+                    <FormField><label>Password<input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label></FormField>
+                    <FormField><label>Confirm Password<input type='password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } /></label></FormField>
                     <input type='Submit' />
-                </form>
+                </Form>
             </> 
         );
     }

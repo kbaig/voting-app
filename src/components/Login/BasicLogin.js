@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import Form from '../../primitives/Form';
+import FormField from '../../primitives/FormField';
+
 class BasicLogin extends Component {
     constructor () {
         super();
@@ -65,11 +68,11 @@ class BasicLogin extends Component {
         return (
             <>
                 <h1>Log In</h1>
-                <form className='Form' onSubmit={ handleSubmit }>
-                    <label>Username: <input value={ username } onChange={ e => handleChange('username', e) } /></label>
-                    <label>Password: <input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label>
+                <Form onSubmit={ handleSubmit }>
+                    <FormField><label>Username<input value={ username } onChange={ e => handleChange('username', e) } /></label></FormField>
+                    <FormField><label>Password<input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label></FormField>                    
                     <input type='submit' />
-                </form>
+                </Form>
             </>
             
         );

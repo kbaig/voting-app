@@ -7,7 +7,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const Poll = require('../../schema/poll');
 
 const { ensureValidToken } = require('../../utils/jwt');
-const validate = require('../validate');
+const validate = require('../../utils/validate');
 
 // get the polls
 router.get('/', async (req, res) => {

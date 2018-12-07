@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import PollPie from './PollPie';
 import VoteForm from './VoteForm';
 import AddOptionForm from './AddOptionForm';
 
@@ -68,17 +69,15 @@ class Poll extends Component {
     }
 
     render () {
-        const { poll } = this.state;
-        const { isAuthenticated } = this.props;
-        const { vote, addOption } = this;        
+        const { state, props, vote, addOption } = this;
+        const { poll } = state;
+        const { isAuthenticated } = props;
+        
 
         return (!!poll && 
             <div>
                 { poll.name }
-                <div>
-                    Options:
-                    { poll.options.map(o => <div key={ o.id }>{ o.name }: { o.votes }</div>) }
-                </div>
+                <PollPie options={ poll.options } />
                 <VoteForm options={ poll.options } pollId={ poll.id } vote={ vote } />
                 { isAuthenticated && <AddOptionForm addOption={ addOption } /> }
             </div>

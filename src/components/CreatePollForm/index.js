@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Form from '../../primitives/Form';
 
+import './CreatePollForm.sass';
+
 class CreatePollForm extends Component {
     constructor () {
         super();
@@ -80,7 +82,7 @@ class CreatePollForm extends Component {
     }
 
     render () {
-        const { options, name } = this.state;
+        const { name, options } = this.state;
         const { handleOptionChange, handleSubmit, handleNameChange, addOption, removeOption } = this;
        
         const optionFields = options.map(
@@ -92,12 +94,16 @@ class CreatePollForm extends Component {
                 <h1>Create a poll</h1>
                 <Form onSubmit={ handleSubmit }>
                 
-                    <label>Name: <input type='text' name='name' value={ name } onChange={ handleNameChange }/></label>
+                    <label htmlFor='name'>Name</label>
+                    <input type='text' id='name' value={ name } onChange={ handleNameChange }/>
 
+                    <div className='Options'>
+                        <label>Options</label>
+                        { optionFields }
+                        <input type='button' onClick={ removeOption } value='-' />
+                        <input type='button' onClick={ addOption } value='+' />
+                    </div>
                     
-                    <label>Options: { optionFields }</label>
-                    <input type='button' onClick={ addOption } value='Add Option'></input>
-                    <input type='button' onClick={ removeOption } value='Remove Option'></input>
                     <input type='submit' />
                 </Form>
             </>
