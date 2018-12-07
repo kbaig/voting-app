@@ -1,9 +1,9 @@
 require('dotenv').load();
 
 const express = require('express');
-const db = require('./db');
+const db = require('./server/db');
 
-const apiRouter = require('./routes');
+const apiRouter = require('./server/routes');
 
 const app = express();
 const port = 3001;
