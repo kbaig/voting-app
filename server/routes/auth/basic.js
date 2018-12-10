@@ -69,12 +69,12 @@ router.post('/login', jsonBodyMiddleware, validate('login'), async (req, res) =>
             } else {
                 // respond with error if passwords don't match
                 console.log('error:', 'invalid username or password');
-                res.json({ error: 'invalid username or password' });
+                res.status(422).json({ error: 'invalid username or password' });
             }
         } else {
             // respond with error if user doesn't exist
             console.log('error:', 'invalid username or password');
-            res.json({ error: 'invalid username or password' });
+            res.status(422).json({ error: 'invalid username or password' });
         }
 
     } catch (error) {

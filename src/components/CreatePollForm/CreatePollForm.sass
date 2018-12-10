@@ -1,24 +1,26 @@
 .Options
     display: grid
-    grid-template-columns: repeat(2, auto)
-    grid-template-rows: repeat(3, auto)
+    grid-template-columns: auto 30px
+    grid-template-rows: repeat(2, auto)
+    grid-gap: 10px
+    margin-top: 10px
 
-    input
-        &[type=text]
-            grid-column: 1 / 2
-            
-            &:nth-of-type(1)
-                grid-row: 2 / 3
-
-            &:nth-of-type(2)
-                grid-row: 3 / 4
+    .FormInput
+        margin-bottom: 0
+        grid-column: 1 / 2            
+        &:nth-of-type(1)
+            grid-row: 1 / 2
+        &:nth-of-type(2)
+            grid-row: 2 / 3
     
-        &[type=button]
-            grid-column: 2 / 3
-            width: 30px
-            
-            &[value='-']    
-                grid-row: 2 / 3
-            
-            &[value='+']
-                grid-row: 3 / 4
+    input[type=button]
+        grid-column: 2 / 3        
+    .RemoveOption
+        grid-row: 1 / 2            
+    .AddOption
+        grid-row: 2 / 3
+
+
+    
+    
+    

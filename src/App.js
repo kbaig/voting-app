@@ -7,6 +7,8 @@ import Nav from './components/Nav';
 import Routes from './components/Routes';
 import Footer from './components/Footer';
 
+import FlashMessage from './primitives/FlashMessage';
+
 import './App.sass';
 
 class App extends Component {
@@ -29,7 +31,8 @@ class App extends Component {
     this.state = {
       isAuthenticated: tokenExists,
       token: tokenExists ? token : null,
-      user: tokenExists ? this._tokenToUser(token): null
+      user: tokenExists ? this._tokenToUser(token): null,
+      flashError: false
     };
   }
 
@@ -60,8 +63,13 @@ class App extends Component {
     });
   }
 
+  flashError = () => {
+    this.setState({ flashError: true });
+    setTimeout(() => this.setState({ flashError: false }), 3000);
+  }
+
   render() {
-    const { isAuthenticated, token, user } = this.state;
+    const { isAuthenticated, token, user, flashError } = this.state;
     const { login, logout } = this;
 
     return (
@@ -77,6 +85,8 @@ class App extends Component {
             logout={ logout }
           />
           <Footer />
+
+          <FlashMessage show={ flashError }>An error has occurred. Please try again.</FlashMessage>
 
         </div>
       </Router>

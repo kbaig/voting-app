@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
 import Form from '../../primitives/Form';
-import FormField from '../../primitives/FormField';
+import FormHeading from '../../primitives/FormHeading';
+import FormFields from '../../primitives/FormFields';
+import FormInput from '../../primitives/FormInput';
+import FormSubmitRow from '../../primitives/FormSubmitRow';
+import Button from '../../primitives/Button';
 
 class BasicLogin extends Component {
     constructor () {
@@ -49,6 +53,7 @@ class BasicLogin extends Component {
 
             if (response.ok) {
                 const { token } = await response.json();
+                console.log({ token })
                 this.props.login({ token });
             } else {
                 const { error } = await response.json();
@@ -61,20 +66,22 @@ class BasicLogin extends Component {
     }
 
     render () {
-        const { form } = this.state;
+        const { handleChange, handleSubmit, state } = this;
+        const { form } = state;
         const { username, password } = form;
-        const { handleChange, handleSubmit } = this;
+        
 
         return (
-            <>
-                <h1>Log In</h1>
-                <Form onSubmit={ handleSubmit }>
-                    <FormField><label>Username<input value={ username } onChange={ e => handleChange('username', e) } /></label></FormField>
-                    <FormField><label>Password<input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label></FormField>                    
-                    <input type='submit' />
-                </Form>
-            </>
-            
+            <Form onSubmit={ handleSubmit }>
+                <FormHeading>Log In</FormHeading>
+                <FormFields>
+                    <FormInput type='text' placeholder='Username' focus value={ username } onChange={ e => handleChange('username', e) } />
+                    <FormInput type='password' placeholder='Password' value={ password } onChange={ e => handleChange('password', e) } />
+                </FormFields>
+                <FormSubmitRow>
+                    <Button type='submit' value='Log In' readOnly />
+                </FormSubmitRow>
+            </Form>
         );
     }
 }

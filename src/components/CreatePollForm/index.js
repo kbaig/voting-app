@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 
 import Form from '../../primitives/Form';
+import FormHeading from '../../primitives/FormHeading';
+import FormFields from '../../primitives/FormFields';
+import FormInput from '../../primitives/FormInput';
+import FormSubmitRow from '../../primitives/FormSubmitRow';
+import Button from '../../primitives/Button';
 
 import './CreatePollForm.sass';
 
@@ -86,27 +91,24 @@ class CreatePollForm extends Component {
         const { handleOptionChange, handleSubmit, handleNameChange, addOption, removeOption } = this;
        
         const optionFields = options.map(
-            (o, id) => <input key={ id } type='text' name='options' value={ o } onChange={ e => handleOptionChange(e, id) }/>
+            (o, id) => <FormInput key={ id } type='text' placeholder='Option' value={ o } onChange={ e => handleOptionChange(e, id) }/>
         );
 
-        return (
-            <>
-                <h1>Create a poll</h1>
-                <Form onSubmit={ handleSubmit }>
-                
-                    <label htmlFor='name'>Name</label>
-                    <input type='text' id='name' value={ name } onChange={ handleNameChange }/>
-
+        return (    
+            <Form onSubmit={ handleSubmit }>
+                <FormHeading>Create A Poll</FormHeading>
+                <FormFields>
+                    <FormInput type='text' placeholder='Name' value={ name } onChange={ handleNameChange }/>
                     <div className='Options'>
-                        <label>Options</label>
                         { optionFields }
-                        <input type='button' onClick={ removeOption } value='-' />
-                        <input type='button' onClick={ addOption } value='+' />
+                        <input type='button' className='RemoveOption' onClick={ removeOption } value='-' />
+                        <input type='button' className='AddOption' onClick={ addOption } value='+' />
                     </div>
-                    
-                    <input type='submit' />
-                </Form>
-            </>
+                </FormFields>
+                <FormSubmitRow>
+                    <Button type='submit' value='Create Poll' readOnly/>
+                </FormSubmitRow>
+            </Form>
         );
     }
 }

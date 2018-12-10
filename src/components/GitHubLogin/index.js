@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import { ReactComponent as GitHubLogo } from '../../svg/github.svg';
+
+import './GitHubLogin.sass';
 
 class GitHubLogin extends Component {
     
@@ -53,8 +56,8 @@ class GitHubLogin extends Component {
 
     render() {
         return (
-            <button onClick={ this.authenticate }>
-                Log in with GitHub
+            <button className='GitHubLogin' onClick={ this.authenticate }>
+                Log in with GitHub<GitHubLogo />
             </button>
         );
     }

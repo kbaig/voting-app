@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 
+import GitHubLogin from '../GitHubLogin';
+
 import Form from '../../primitives/Form';
-import FormField from '../../primitives/FormField';
+import FormHeading from '../../primitives/FormHeading';
+import FormFields from '../../primitives/FormFields';
+import FormInput from '../../primitives/FormInput';
+import FormSubmitRow from '../../primitives/FormSubmitRow';
+import Button from '../../primitives/Button';
 
 class SignUpForm extends Component {
     constructor () {
@@ -78,21 +84,28 @@ class SignUpForm extends Component {
     }
 
     render () {
-        const { form } = this.state;
+        const { handleChange, handleSubmit, state, props } = this;
+        const { form } = state;
+        const { login } = props;
         const { name, email, username, password, passwordConfirmation } = form;
-        const { handleChange, handleSubmit } = this;
+        
         return (
             <>
-                <h1>Sign Up</h1>
                 <Form onSubmit={ handleSubmit }>
-                    <FormField><label>Name<input type='text' value={ name } onChange={ e => handleChange('name', e) } /></label></FormField>
-                    <FormField><label>Email<input type='email' value={ email } onChange={ e => handleChange('email', e) } /></label></FormField>
-                    <FormField><label>Username<input type='text' value={ username } onChange={ e => handleChange('username', e) } /></label></FormField>
-                    <FormField><label>Password<input type='password' value={ password } onChange={ e => handleChange('password', e) } /></label></FormField>
-                    <FormField><label>Confirm Password<input type='password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } /></label></FormField>
-                    <input type='Submit' />
+                    <FormHeading>Sign Up</FormHeading>
+                    <FormFields>
+                        <FormInput type='text' placeholder='Name' focus value={ name } onChange={ e => handleChange('name', e) } />
+                        <FormInput type='email' placeholder='Email' value={ email } onChange={ e => handleChange('email', e) } />
+                        <FormInput type='text' placeholder='Username' value={ username } onChange={ e => handleChange('username', e) } />
+                        <FormInput type='password' placeholder='Password' value={ password } onChange={ e => handleChange('password', e) } />
+                        <FormInput type='password' placeholder='Confirm Password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } />
+                    </FormFields>              
+                    <FormSubmitRow>
+                        <Button type='Submit' value='Sign Up' readOnly/>
+                    </FormSubmitRow>
                 </Form>
-            </> 
+                <GitHubLogin login={ login } />
+            </>              
         );
     }
 }

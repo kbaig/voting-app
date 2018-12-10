@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 
+import Button from '../../primitives/Button';
+
 import './Nav.sass';
 
 class Nav extends Component {
@@ -18,7 +20,7 @@ class Nav extends Component {
                     { isAuthenticated ?
                     <>
                         <li>{ user.name }</li>
-                        <li><button onClick={ logout }>Log Out</button></li>
+                        <li><Button type='button' value='Log Out' onClick={ logout } /></li>
                     </> :
                     <>
                         <li><Link to='/login/'>Login</Link></li>
