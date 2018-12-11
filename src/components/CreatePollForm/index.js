@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import Form from '../../primitives/Form';
 import FormHeading from '../../primitives/FormHeading';
 import FormFields from '../../primitives/FormFields';
 import FormInput from '../../primitives/FormInput';
@@ -23,7 +22,7 @@ class CreatePollForm extends Component {
         this.setState({ name: e.target.value });
     }
 
-    handleOptionChange = (e, id) => {
+    handleOptionChange = id => e => {
         const { value } = e.target ;
         this.setState(prevState => (
             { options: prevState.options.map((o, i) => i === id ? value : o) }
@@ -87,15 +86,15 @@ class CreatePollForm extends Component {
     }
 
     render () {
-        const { name, options } = this.state;
-        const { handleOptionChange, handleSubmit, handleNameChange, addOption, removeOption } = this;
+        const { handleOptionChange, handleSubmit, handleNameChange, addOption, removeOption, state } = this;
+        const { name, options } = state;
        
         const optionFields = options.map(
-            (o, id) => <FormInput key={ id } type='text' placeholder='Option' value={ o } onChange={ e => handleOptionChange(e, id) }/>
+            (o, id) => <FormInput key={ id } type='text' placeholder='Option' value={ o } onChange={ handleOptionChange(id) }/>
         );
 
         return (    
-            <Form onSubmit={ handleSubmit }>
+            <form className='CreatePollForm' onSubmit={ handleSubmit }>
                 <FormHeading>Create A Poll</FormHeading>
                 <FormFields>
                     <FormInput type='text' placeholder='Name' value={ name } onChange={ handleNameChange }/>
@@ -108,7 +107,7 @@ class CreatePollForm extends Component {
                 <FormSubmitRow>
                     <Button type='submit' value='Create Poll' readOnly/>
                 </FormSubmitRow>
-            </Form>
+            </form>
         );
     }
 }

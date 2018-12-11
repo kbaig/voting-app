@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 
 import GitHubLogin from '../GitHubLogin';
 
-import Form from '../../primitives/Form';
+import AuthForm from '../../primitives/AuthForm';
 import FormHeading from '../../primitives/FormHeading';
-import FormFields from '../../primitives/FormFields';
 import FormInput from '../../primitives/FormInput';
 import FormSubmitRow from '../../primitives/FormSubmitRow';
 import Button from '../../primitives/Button';
+
+import validate from './validate';
 
 class SignUpForm extends Component {
     constructor () {
@@ -20,27 +21,43 @@ class SignUpForm extends Component {
                 username: '',
                 password: '',
                 passwordConfirmation: ''
+            },
+            errors: {
+                name: null,
+                email: null,
+                username: null,
+                password: null,
+                passwordConfirmation: null
             }
         };
     }
 
-    handleChange = (attr, e) => {
-        const { value } = e.target;
-        this.setState(prevState => {
+    validate = attr => e => {
+        const error = validate(attr, this.state.form);        
 
-            const prevForm = prevState.form;
-
-            return {
-                ...prevState,
-                form: {
-                    ...prevForm,
-                    [attr]: value
-                }
-            };
-        });
+        this.setState(prevState => ({
+            ...prevState,
+            errors: {
+                ...prevState.errors,
+                [attr]: error
+            }
+        }));
     }
 
-    // TODO: front end validation
+    handleChange = attr => e => {
+        const { value } = e.target;
+
+        console.log(value);
+
+        this.setState(prevState => ({
+            ...prevState,
+            form: {
+                ...prevState.form,
+                [attr]: value
+            }
+        }));
+    }
+
     // validate and submit
     handleSubmit = async e => {
         e.preventDefault();
@@ -84,26 +101,26 @@ class SignUpForm extends Component {
     }
 
     render () {
-        const { handleChange, handleSubmit, state, props } = this;
-        const { form } = state;
+        const { validate, handleChange, handleSubmit, state, props } = this;
+        const { form, errors } = state;
         const { login } = props;
         const { name, email, username, password, passwordConfirmation } = form;
         
         return (
             <>
-                <Form onSubmit={ handleSubmit }>
+                <AuthForm onSubmit={ handleSubmit }>
                     <FormHeading>Sign Up</FormHeading>
-                    <FormFields>
-                        <FormInput type='text' placeholder='Name' focus value={ name } onChange={ e => handleChange('name', e) } />
-                        <FormInput type='email' placeholder='Email' value={ email } onChange={ e => handleChange('email', e) } />
-                        <FormInput type='text' placeholder='Username' value={ username } onChange={ e => handleChange('username', e) } />
-                        <FormInput type='password' placeholder='Password' value={ password } onChange={ e => handleChange('password', e) } />
-                        <FormInput type='password' placeholder='Confirm Password' value={ passwordConfirmation } onChange={ e => handleChange('passwordConfirmation', e) } />
-                    </FormFields>              
+           
+                    <FormInput label='Name' placeholder='Ford Prefect' focus value={ name } onChange={ handleChange('name') } onBlur={ validate('name') } error={ errors.name } />
+                    <FormInput label='Email' type='email' placeholder='ford@example.com' value={ email } onChange={ handleChange('email') } onBlur={ validate('email') } error={ errors.email }/>
+                    <FormInput label='Username' placeholder='fprefect' value={ username } onChange={ handleChange('username') } onBlur={ validate('username') } error={ errors.username } />
+                    <FormInput label='Password' type='password' placeholder='SLaR!1bar!fAS~' value={ password } onChange={ handleChange('password') } onBlur={ validate('password') }  error={ errors.password } />
+                    <FormInput label='Confirm Password' type='password' placeholder='SLaR!1bar!fAS~' value={ passwordConfirmation } onChange={ handleChange('passwordConfirmation') } onBlur={ validate('passwordConfirmation') } error={ errors.passwordConfirmation } />
+                       
                     <FormSubmitRow>
                         <Button type='Submit' value='Sign Up' readOnly/>
                     </FormSubmitRow>
-                </Form>
+                </AuthForm>
                 <GitHubLogin login={ login } />
             </>              
         );

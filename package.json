@@ -17,7 +17,8 @@
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.6.3",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.1"
+    "react-scripts": "2.1.1",
+    "validator": "^10.9.0"
   },
   "scripts": {
     "start": "concurrently --kill-others-on-fail \"react-scripts start\" \"nodemon server\"",

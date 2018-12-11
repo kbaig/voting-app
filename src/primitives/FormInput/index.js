@@ -16,9 +16,18 @@ class FormInput extends Component {
     }
 
     render () {
-        const { focus, ...rest } = this.props;
+        const { focus, label, hint, error, ...rest } = this.props;
         return (
-            <input className='FormInput' { ...rest } ref={ this.ref }/>
+            <div className='FormInput'>
+                <label>
+                    <div className='Label'>{ label }</div>
+                    <div className='Hint'>{ hint }</div>
+                    <input { ...rest } ref={ this.ref }/>
+                </label>
+                <div className='Error'>{ error }</div>
+            </div>
+            
+            
         );
     }
 }

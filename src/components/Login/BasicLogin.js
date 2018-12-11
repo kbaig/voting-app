@@ -1,11 +1,24 @@
 import React, { Component } from 'react';
 
-import Form from '../../primitives/Form';
+import AuthForm from '../../primitives/AuthForm';
 import FormHeading from '../../primitives/FormHeading';
 import FormFields from '../../primitives/FormFields';
 import FormInput from '../../primitives/FormInput';
 import FormSubmitRow from '../../primitives/FormSubmitRow';
 import Button from '../../primitives/Button';
+
+// const validation = {
+//     username: {
+//         minLength: 4,
+//         maxLength: 15,
+//         required: true
+//     },
+//     password: {
+//         minLength: 8,
+//         required: true
+//     }
+    
+// };
 
 class BasicLogin extends Component {
     constructor () {
@@ -19,7 +32,7 @@ class BasicLogin extends Component {
         }
     }
 
-    handleChange = (attr, e) => {
+    handleChange = attr => e => {
         const { value } = e.target;
         this.setState(prevState => {
 
@@ -70,18 +83,17 @@ class BasicLogin extends Component {
         const { form } = state;
         const { username, password } = form;
         
-
         return (
-            <Form onSubmit={ handleSubmit }>
+            <AuthForm onSubmit={ handleSubmit }>
                 <FormHeading>Log In</FormHeading>
                 <FormFields>
-                    <FormInput type='text' placeholder='Username' focus value={ username } onChange={ e => handleChange('username', e) } />
-                    <FormInput type='password' placeholder='Password' value={ password } onChange={ e => handleChange('password', e) } />
+                    <FormInput type='text' placeholder='Username' focus value={ username } onChange={ handleChange('username') } />
+                    <FormInput type='password' placeholder='Password' value={ password } onChange={ handleChange('password') } />
                 </FormFields>
                 <FormSubmitRow>
                     <Button type='submit' value='Log In' readOnly />
                 </FormSubmitRow>
-            </Form>
+            </AuthForm>
         );
     }
 }
