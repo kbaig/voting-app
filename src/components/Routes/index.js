@@ -18,7 +18,7 @@ import './Routes.sass';
 
 class Main extends Component {
     render () {
-        const { isAuthenticated, token, login, logout, user } = this.props;
+        const { isAuthenticated, token, login, logout, user, flashError } = this.props;
 
         return (
             <main className='Routes'>
@@ -56,6 +56,7 @@ class Main extends Component {
                     component={ SignUpForm }
                     isAuthenticated={ isAuthenticated }
                     login={ login }
+                    flashError={ flashError }
                 />
             </main>
         );

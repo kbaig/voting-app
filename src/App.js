@@ -32,7 +32,10 @@ class App extends Component {
       isAuthenticated: tokenExists,
       token: tokenExists ? token : null,
       user: tokenExists ? this._tokenToUser(token): null,
-      flashError: false
+      error: {
+        show: false,
+        message: null
+      }
     };
   }
 
@@ -63,14 +66,14 @@ class App extends Component {
     });
   }
 
-  flashError = () => {
-    this.setState({ flashError: true });
-    setTimeout(() => this.setState({ flashError: false }), 3000);
+  flashError = message => {
+    this.setState({ error: { show: true, message } });
+    setTimeout(() => this.setState({ error: { show: false, message: null } }), 3000);
   }
 
   render() {
-    const { isAuthenticated, token, user, flashError } = this.state;
-    const { login, logout } = this;
+    const { login, logout, flashError, state } = this;
+    const { isAuthenticated, token, user, error } = state;    
 
     return (
       <Router>
@@ -83,10 +86,12 @@ class App extends Component {
             user={ user }
             login={ login }
             logout={ logout }
+            flashError={ flashError }
           />
           <Footer />
 
-          <FlashMessage show={ flashError }>An error has occurred. Please try again.</FlashMessage>
+          <FlashMessage show={ error.show }>{ error.message }</FlashMessage>
+          {/* <FlashMessage show={ true }>{ 'Something went wrong' }</FlashMessage> */}
 
         </div>
       </Router>

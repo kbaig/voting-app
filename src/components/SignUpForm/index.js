@@ -126,10 +126,34 @@ class SignUpForm extends Component {
             } else {
                 const { error } = await response.json();
                 console.log({ error });
+
+                this.handleResponseError(response.status, error);
             }
 
         } catch (error) {
             console.log({ error });
+        }
+    }
+
+    handleResponseError = (status, error) => {
+        if (status === 500) this.props.flashError(error);
+        if (status === 422) {
+            this.setState(prevState => {
+                const { form } = prevState;
+                const attrs = Object.keys(error);
+
+                attrs.forEach(attr => {
+                    form[attr] = {
+                        ...form[attr],
+                        error: error[attr],
+                        showError: true
+                    };
+                });
+
+                const formIsInvalid = true;
+
+                return { ...prevState, form, formIsInvalid };
+            });
         }
     }
 
@@ -204,7 +228,9 @@ class SignUpForm extends Component {
                     <FormSubmitRow>
                         <Button type='Submit' value='Sign Up' readOnly disabled={ formIsInvalid } />
                     </FormSubmitRow>
+
                 </AuthForm>
+                
                 <GitHubLogin login={ login } />
             </>              
         );

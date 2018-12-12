@@ -40,7 +40,7 @@ const validate = (attr, val, prevForm) => {
                 return 'Enter a password';
             } else if (!isLength(val, { min: 8 })) {
                 return 'Must be at least 8 characters';
-            } else if (!matches(val, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-~]).{8,}$/)) {
+            } else if (!matches(val, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*~-]).{8,}$/)) {
                 return 'Does not meet requirements';
             }
             break;
