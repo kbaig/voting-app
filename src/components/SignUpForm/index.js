@@ -16,69 +16,102 @@ class SignUpForm extends Component {
 
         this.state = {
             form: {
-                name: '',
-                email: '',
-                username: '',
-                password: '',
-                passwordConfirmation: ''
+                name: {
+                    value: '',
+                    error: null,
+                    showError: false
+                },
+                email: {
+                    value: '',
+                    error: null,
+                    showError: false
+                },
+                username: {
+                    value: '',
+                    error: null,
+                    showError: false
+                },
+                password: {
+                    value: '',
+                    error: null,
+                    showError: false
+                },
+                passwordConfirmation: {
+                    value: '',
+                    error: null,
+                    showError: false
+                }
             },
-            errors: {
-                name: null,
-                email: null,
-                username: null,
-                password: null,
-                passwordConfirmation: null
-            }
+            formIsInvalid: true
         };
     }
 
-    validate = attr => e => {
-        const error = validate(attr, this.state.form);        
+    revealErrorOnBlur = attr => e => {
+        this.setState(prevState => {
+            const form = {
+                ...prevState.form,
+                [attr]: {
+                    ...prevState.form[attr],
+                    showError: !!prevState.form[attr].error
+                }
+            };
 
-        this.setState(prevState => ({
-            ...prevState,
-            errors: {
-                ...prevState.errors,
-                [attr]: error
-            }
-        }));
+            return { ...prevState, form };
+        });
     }
 
+    // validate and change value
     handleChange = attr => e => {
         const { value } = e.target;
 
-        console.log(value);
+        this.setState(prevState => {
+            const prevForm = prevState.form;
 
-        this.setState(prevState => ({
-            ...prevState,
-            form: {
-                ...prevState.form,
-                [attr]: value
+            const error = validate(attr, value, prevForm);
+
+            // special error render handling for password confirmation
+            // error will show on pw conf change if
+            // showError is already true or conf length >= pw length
+            const showError = attr === 'passwordConfirmation' && (prevForm[attr].showError || value.length >= prevForm.password.value.length);
+
+            const form = {
+                ...prevForm,
+                [attr]: {
+                    ...prevForm[attr],
+                    value,
+                    error,
+                    showError
+                }
+            };
+
+            // add password confirmation error if password just got modified and passsword conf field has been interacted with
+            if (attr === 'password' && form.passwordConfirmation.value !== '') {
+                const passwordConfirmationError = validate('passwordConfirmation', form.passwordConfirmation.value, form);
+
+                form.passwordConfirmation = {
+                    ...form.passwordConfirmation,
+                    error: passwordConfirmationError,
+                    showError: !!passwordConfirmationError
+                }
             }
-        }));
+
+            const formIsInvalid = Object.keys(form).some(key => !!form[key].error || form[key].value === '');
+
+            return { ...prevState, form, formIsInvalid };
+        });
     }
 
-    // validate and submit
+    // submit
     handleSubmit = async e => {
         e.preventDefault();
 
         const { form } = this.state;
 
-        const { password, passwordConfirmation } = form;
-
-        if (password !== passwordConfirmation) {
-            return console.log(`passwords don't match`);
-        }
-
-        const name = form.name.trim();
-        const email = form.email.trim();
-        const username = form.username.trim();
-
-        if ([name, email, username].some(attr => attr.length === 0)) {
-            return console.log('no empty fields!');
-        }
-
-        console.log('submitting:', { name, email, username, password, passwordConfirmation });
+        const name = form.name.value.trim();
+        const email = form.email.value.trim();
+        const username = form.username.value.trim();
+        const password = form.password.value;
+        const passwordConfirmation = form.passwordConfirmation.value;
 
         try {
             const response = await fetch('http://localhost:3001/api/auth/basic/signup', {
@@ -101,24 +134,75 @@ class SignUpForm extends Component {
     }
 
     render () {
-        const { validate, handleChange, handleSubmit, state, props } = this;
-        const { form, errors } = state;
-        const { login } = props;
+        const { revealErrorOnBlur, handleChange, handleSubmit, state, props } = this;
+        const { form, formIsInvalid } = state;
         const { name, email, username, password, passwordConfirmation } = form;
+        const { login } = props;
         
         return (
             <>
                 <AuthForm onSubmit={ handleSubmit }>
                     <FormHeading>Sign Up</FormHeading>
            
-                    <FormInput label='Name' placeholder='Ford Prefect' focus value={ name } onChange={ handleChange('name') } onBlur={ validate('name') } error={ errors.name } />
-                    <FormInput label='Email' type='email' placeholder='ford@example.com' value={ email } onChange={ handleChange('email') } onBlur={ validate('email') } error={ errors.email }/>
-                    <FormInput label='Username' placeholder='fprefect' value={ username } onChange={ handleChange('username') } onBlur={ validate('username') } error={ errors.username } />
-                    <FormInput label='Password' type='password' placeholder='SLaR!1bar!fAS~' value={ password } onChange={ handleChange('password') } onBlur={ validate('password') }  error={ errors.password } />
-                    <FormInput label='Confirm Password' type='password' placeholder='SLaR!1bar!fAS~' value={ passwordConfirmation } onChange={ handleChange('passwordConfirmation') } onBlur={ validate('passwordConfirmation') } error={ errors.passwordConfirmation } />
+                    <FormInput
+                        label='Name'
+                        placeholder='Ford Prefect'
+                        value={ name.value }
+                        onChange={ handleChange('name') }
+                        withError
+                        error={ name.error }
+                        showError={ name.showError }
+                        onBlur={ revealErrorOnBlur('name') }
+                        focus
+                    />
+                    <FormInput
+                        type='email'
+                        label='Email'
+                        placeholder='ford@example.com'
+                        value={ email.value }
+                        onChange={ handleChange('email') }
+                        withError
+                        error={ email.error }
+                        showError= { email.showError }
+                        onBlur={ revealErrorOnBlur('email') }
+                    />
+                    <FormInput
+                        label='Username'
+                        hint='4 to 15 alphanumeric characters'
+                        placeholder='fprefect'
+                        value={ username.value }
+                        onChange={ handleChange('username') }
+                        withError
+                        error={ username.error }
+                        showError= { username.showError }
+                        onBlur={ revealErrorOnBlur('username') }
+                    />
+                    <FormInput
+                        type='password'
+                        label='Password'
+                        hint='8 or more characters with at least one uppercase, lowercase, digit, and special character'
+                        placeholder='SLaR!1bar!fAS~'
+                        value={ password.value }
+                        onChange={ handleChange('password') }
+                        withError
+                        error={ password.error }
+                        showError= { password.showError }
+                        onBlur={ revealErrorOnBlur('password') }
+                    />
+                    <FormInput
+                        type='password'
+                        label='Confirm Password'
+                        placeholder='SLaR!1bar!fAS~'
+                        value={ passwordConfirmation.value }
+                        onChange={ handleChange('passwordConfirmation') }
+                        withError
+                        error={ passwordConfirmation.error }
+                        showError= { passwordConfirmation.showError }
+                        onBlur={ revealErrorOnBlur('passwordConfirmation') }
+                    />
                        
                     <FormSubmitRow>
-                        <Button type='Submit' value='Sign Up' readOnly/>
+                        <Button type='Submit' value='Sign Up' readOnly disabled={ formIsInvalid } />
                     </FormSubmitRow>
                 </AuthForm>
                 <GitHubLogin login={ login } />

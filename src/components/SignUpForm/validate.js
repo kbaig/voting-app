@@ -1,8 +1,6 @@
 import { isEmpty, isLength, matches, isEmail, equals } from 'validator';
 
-const validate = (attr, form) => {
-    let val = form[attr];
-
+const validate = (attr, val, prevForm) => {
     switch (attr) {
         case 'name':
             val = val.trim();
@@ -11,7 +9,7 @@ const validate = (attr, form) => {
             } else if (!isLength(val, { max: 25 })) {
                 return 'Cannot be longer than 25 characters';
             } else if (!matches(val, /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/)) {
-                return 'Invalid character used';
+                return 'Invalid characters used';
             }
             break;
 
@@ -20,7 +18,7 @@ const validate = (attr, form) => {
             if (isEmpty(val)) {
                 return 'Enter an email';
             } else if (!isEmail(val)) {
-                return 'Invalid email';
+                return 'Email formatted incorrectly';
             }
             break;
 
@@ -28,23 +26,29 @@ const validate = (attr, form) => {
             val = val.trim();
             if (isEmpty(val)) {
                 return 'Enter a username';
+            } else if (!isLength(val, { min: 4 })) {
+                return 'Must be at least 4 characters';
+            } else if (!isLength(val, { max: 15 })) {
+                return 'Cannot be longer than 15 characters';
             } else if (!matches(val, /^[a-zA-Z\d]{4,15}$/)) {
-                return 'Invalid username';
+                return 'Only aphanumeric characters are permitted';
             }
             break;
 
         case 'password':
             if (isEmpty(val)) {
                 return 'Enter a password';
-            } else if (!matches(val, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)) {
-                return 'Password does not meet requirements';
+            } else if (!isLength(val, { min: 8 })) {
+                return 'Must be at least 8 characters';
+            } else if (!matches(val, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-~]).{8,}$/)) {
+                return 'Does not meet requirements';
             }
             break;
 
         case 'passwordConfirmation':
             if (isEmpty(val)) {
-                return 'Enter a password confirmation';
-            } else if (!equals(val, form.password)) {
+                return 'Please confirm password';
+            } else if (!equals(val, prevForm.password.value)) {
                 return 'Password and password confirmation do not match';
             }
             break;

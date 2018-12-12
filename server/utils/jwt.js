@@ -26,7 +26,7 @@ const ensureValidToken = (req, res, next) => {
 
     jwt.verify(token, TOKEN_SECRET, (error, payload) => {
         if (error) {
-            // respond with error
+            // respond with unauthorized error as token is invalid
             res.status(401).json({ error: 'Unauthorized' });
         }
 

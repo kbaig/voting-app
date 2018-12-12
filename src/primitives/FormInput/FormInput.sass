@@ -1,38 +1,52 @@
 .FormInput
     margin-bottom: 15px
     &:last-of-type
-        background: red
         margin-bottom: 0
-    
-    label
-        display: flex
-        flex-direction: column
-        font-size: 16px
-        font-weight: 600
-        color: rgba(0,0,0,0.8)
 
-        .Label
-            margin-bottom: 2px
+    display: flex
+    flex-direction: column
+    font-size: 16px
+    font-weight: 600
+    color: rgba(0,0,0,0.8)
 
-        .Hint
-            margin-bottom: 4px
-            font-size: 14px
-            font-weight: 400
-            font-style: italic
+    .Label
+        margin-bottom: 2px
 
-        input
-            // margin-top: 4px
-            padding: 8px 10px
-            background: #fff
-            border: 1px solid #aaa
-            border-radius: 3px
-            font-family: inherit
-            font-size: 14px
-            color: #222
+    .Hint
+        margin-bottom: 2px
+        font-size: 14px
+        font-weight: 400
+        font-style: italic
+
+    $focus-color: blue
+    input
+        padding: 8px 10px
+        background: #fff
+        &:focus
+            outline: none
+            border-color: $focus-color
+            
+        border: 1px solid #aaa
+        border-radius: 3px
+        font-family: inherit
+        font-size: 14px
+        color: #222
+        
     
     .Error
         margin-top: 4px
         padding: 0 4px
         font-size: 14px
         font-weight: 500
-        color: rgba(0,0,0,0.9)
+        color: rgba(0,0,0,0.8)
+
+    $error-color: red
+    &.Invalid
+        input
+            border-color: $error-color
+            &:focus 
+                outline: none
+                box-shadow: inset 1px 1px 1px $error-color, inset -1px -1px 1px $error-color
+        
+        .Error
+            color: $error-color

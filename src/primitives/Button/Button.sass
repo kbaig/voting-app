@@ -1,11 +1,15 @@
 .Button
-    padding: 4px 8px
+    padding: 8px 14px
     cursor: pointer
-    background: none
-    box-shadow: 0px 1px 2px #bbb
-    border: 1px solid #555555    
+    background: rgba(0,0,0,0.8)
+    border: 1px solid rgba(0,0,0,0.4)
+    border-radius: 6px
     font: inherit
-    font-weight: 500
+    font-size: 16px
+    font-weight: 400
+    color: rgba(255,255,255,0.9)
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.4)
 
-form:invalid .Button
-    opacity: 0.7
+    &:disabled
+        cursor: auto
+        opacity: 0.6

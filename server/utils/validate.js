@@ -1,6 +1,7 @@
 const { body, query, validationResult } = require('express-validator/check');
 
-// TODO: add http status code 422
+const User = require('../schema/user');
+
 // middleware for throwing validation errors
 const handleValidation = (req, res, next) => {
     const errors = validationResult(req);
@@ -53,18 +54,26 @@ const validateMethod = method => {
                 body('email')
                     .exists().withMessage('Enter an email')
                     .isEmail().withMessage('Email must be formatted correctly (e.g. user@example.com)')
-                    .trim(),
+                    .trim()
+                    .custom(async email => {
+                        const preexistingUsers = await Poll.find({ email });
+                        return preexistingUsers.length === 0;
+                    }).withMessage('Email already taken'),
                 body('username')
                     .exists().withMessage('Enter a username')
                     .isString().withMessage('Username must be a string')
                     .trim()
                     .not().isEmpty().withMessage('Username must be a nonempty string')                    
-                    .matches(/^[a-zA-Z\d]{4,15}$/).withMessage('Username may only contain alphanumeric characters and be between 4 and 15 characters long'),
+                    .matches(/^[a-zA-Z\d]{4,15}$/).withMessage('Username may only contain alphanumeric characters and be between 4 and 15 characters long')
+                    .custom(async username => {
+                        const preexistingUsers = await Poll.find({ username });
+                        return preexistingUsers.length === 0;
+                    }).withMessage('Username already taken'),
                 body('password')
                     .exists().withMessage('Enter a password')
                     .isString().withMessage('Password must be a string')
                     .not().isEmpty().withMessage('Password must be a nonempty string')                    
-                    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/).withMessage('Password must be at least 8 characters long, and include at least one uppercase letter, lowercase letter, digit, and special character'),
+                    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-~]).{8,}$/).withMessage('Password must be at least 8 characters long, and include at least one uppercase letter, lowercase letter, digit, and special character'),
                 body('passwordConfirmation')
                     .exists().withMessage('Enter a password confirmation')
                     .isString().withMessage('Password confirmation must be a string')

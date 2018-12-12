@@ -13,12 +13,6 @@ router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) 
     const { name, email, username, password } = req.body;
 
     try {
-        // check if username or email are taken
-        const preexistingUsers = await User.find({ $or: [{ email }, { username }] });
-        if (preexistingUsers.length > 0) {
-            return res.json({error: 'email or username already taken'});
-        }
-
         // encrypt password
         const encrypted_password = await encrypt(password);
 
@@ -29,7 +23,7 @@ router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) 
         user.formatAndTokenize((error, token) => {
             if (error) {
                 console.log('error:', error);
-                res.json({ error });
+                res.status(500).json({ error });
             } else {
                 console.log('token:', token);
                 res.json({ token });
@@ -38,7 +32,7 @@ router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) 
 
     } catch (error) {
         console.log('error:', error);
-        res.status(500).json({ error: 'Internal server error occurred' });
+        res.status(500).json({ error: 'Something unexpected went wrong' });
     }
 });
 
