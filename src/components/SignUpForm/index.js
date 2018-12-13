@@ -41,23 +41,22 @@ class SignUpForm extends Component {
                     error: null,
                     showError: false
                 }
-            },
-            formIsInvalid: true
+            }
         };
     }
 
+    // show user error only if they have finished typing
     revealErrorOnBlur = attr => e => {
-        this.setState(prevState => {
-            const form = {
+        this.setState(prevState => ({
+            ...prevState,
+            form: {
                 ...prevState.form,
                 [attr]: {
                     ...prevState.form[attr],
                     showError: !!prevState.form[attr].error
                 }
-            };
-
-            return { ...prevState, form };
-        });
+            }
+        }));
     }
 
     // validate and change value
@@ -95,9 +94,7 @@ class SignUpForm extends Component {
                 }
             }
 
-            const formIsInvalid = Object.keys(form).some(key => !!form[key].error || form[key].value === '');
-
-            return { ...prevState, form, formIsInvalid };
+            return { ...prevState, form };
         });
     }
 
@@ -150,16 +147,14 @@ class SignUpForm extends Component {
                     };
                 });
 
-                const formIsInvalid = true;
-
-                return { ...prevState, form, formIsInvalid };
+                return { ...prevState, form };
             });
         }
     }
 
     render () {
         const { revealErrorOnBlur, handleChange, handleSubmit, state, props } = this;
-        const { form, formIsInvalid } = state;
+        const { form } = state;
         const { name, email, username, password, passwordConfirmation } = form;
         const { login } = props;
         
@@ -226,11 +221,11 @@ class SignUpForm extends Component {
                     />
                        
                     <FormSubmitRow>
-                        <Button type='Submit' value='Sign Up' readOnly disabled={ formIsInvalid } />
+                        <Button type='Submit' value='Sign Up' readOnly />
                     </FormSubmitRow>
 
                 </AuthForm>
-                
+
                 <GitHubLogin login={ login } />
             </>              
         );

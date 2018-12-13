@@ -48,12 +48,12 @@ const validateMethod = method => {
                     .exists().withMessage('Enter a name')
                     .isString().withMessage('Name must be a string')
                     .trim()
-                    .not().isEmpty().withMessage('Name must be a nonempty string')
-                    .isLength({ max: 25 }).withMessage('Names cannot be longer than 25 characters')
-                    .matches(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/).withMessage(`Names may only contain alphabets, spaces, and the following characters: , . - '`),
+                    .not().isEmpty().withMessage('Enter a name')
+                    .isLength({ max: 25 }).withMessage('Cannot be longer than 25 characters')
+                    .matches(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/).withMessage('Invalid characters used'),
                 body('email')
                     .exists().withMessage('Enter an email')
-                    .isEmail().withMessage('Email must be formatted correctly (e.g. user@example.com)')
+                    .isEmail().withMessage('Email formatted incorrectly')
                     .trim()
                     .custom(async email => {
                         const preexistingUsers = await User.find({ email });
@@ -63,8 +63,10 @@ const validateMethod = method => {
                     .exists().withMessage('Enter a username')
                     .isString().withMessage('Username must be a string')
                     .trim()
-                    .not().isEmpty().withMessage('Username must be a nonempty string')                    
-                    .matches(/^[a-zA-Z\d]{4,15}$/).withMessage('Username may only contain alphanumeric characters and be between 4 and 15 characters long')
+                    .not().isEmpty().withMessage('Enter a username')
+                    .isLength({ min: 4 }).withMessage('Must be at least 4 characters')
+                    .isLength({ max: 15 }).withMessage('Cannot be longer than 15 characters')
+                    .matches(/^[a-zA-Z\d]{4,15}$/).withMessage('Only aphanumeric characters are permitted')
                     .custom(async username => {
                         const preexistingUsers = await User.find({ username });
                         return preexistingUsers.length === 0;
@@ -72,12 +74,13 @@ const validateMethod = method => {
                 body('password')
                     .exists().withMessage('Enter a password')
                     .isString().withMessage('Password must be a string')
-                    .not().isEmpty().withMessage('Password must be a nonempty string')                    
-                    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*~-]).{8,}$/).withMessage('Password must be at least 8 characters long, and include at least one uppercase letter, lowercase letter, digit, and special character'),
+                    .not().isEmpty().withMessage('Enter a password')                    
+                    .isLength({ min: 8 }).withMessage('Must be at least 8 characters')
+                    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*~-]).{8,}$/).withMessage('Does not meet requirements'),
                 body('passwordConfirmation')
-                    .exists().withMessage('Enter a password confirmation')
+                    .exists().withMessage('Please confirm password')
                     .isString().withMessage('Password confirmation must be a string')
-                    .not().isEmpty().withMessage('Password confirmation must be a nonempty string')
+                    .not().isEmpty().withMessage('Please confirm password')
                     .custom((confirmation, { req }) => confirmation === req.body.password).withMessage('Password and password confirmation do not match')
             ];
         case 'login':
