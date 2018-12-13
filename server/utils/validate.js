@@ -88,10 +88,12 @@ const validateMethod = method => {
                 body('username')
                     .exists().withMessage('Enter a username')
                     .isString().withMessage('Username must be a string')
-                    .trim(),
+                    .trim()
+                    .not().isEmpty().withMessage('Enter a username'),
                 body('password')
                     .exists().withMessage('Enter a password')
                     .isString().withMessage('Password must be a string')
+                    .not().isEmpty().withMessage('Enter a password'),
             ];
     }
 };

@@ -22,7 +22,7 @@ class FormInput extends Component {
                 <div className='Label'>{ label }</div>
                 { hint && <div className='Hint'>{ hint }</div> }
                 <input { ...rest } ref={ this.ref }/>
-                { (withError && showError) && <div className='Error'>{ error }</div> }
+                { (withError && showError && error) && <div className='Error'>{ error }</div> }
             </label>
         );
     }

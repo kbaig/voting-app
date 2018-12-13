@@ -2,23 +2,10 @@ import React, { Component } from 'react';
 
 import AuthForm from '../../primitives/AuthForm';
 import FormHeading from '../../primitives/FormHeading';
-import FormFields from '../../primitives/FormFields';
+import FormError from '../../primitives/FormError';
 import FormInput from '../../primitives/FormInput';
 import FormSubmitRow from '../../primitives/FormSubmitRow';
 import Button from '../../primitives/Button';
-
-// const validation = {
-//     username: {
-//         minLength: 4,
-//         maxLength: 15,
-//         required: true
-//     },
-//     password: {
-//         minLength: 8,
-//         required: true
-//     }
-    
-// };
 
 class BasicLogin extends Component {
     constructor () {
@@ -26,35 +13,41 @@ class BasicLogin extends Component {
 
         this.state = {
             form: {
-                username: '',
-                password: ''
-            }
+                username: {
+                    value: '',
+                    error: null
+                },
+                password: {
+                    value: '',
+                    error: null
+                }
+            },
+            formError: null
         }
     }
 
     handleChange = attr => e => {
         const { value } = e.target;
-        this.setState(prevState => {
 
-            const prevForm = prevState.form;
-            
-            return {
-                ...prevState,
-                form: {
-                    ...prevForm,
-                    [attr]: value
+        this.setState(prevState => ({
+            ...prevState,
+            form: {
+                ...prevState.form,
+                [attr]: {
+                    ...prevState.form[attr],
+                    value,
+                    error: null
                 }
-            };
-        });
+            }
+        }));
     }
 
-    // TODO: front end validation
     handleSubmit = async e => {
         e.preventDefault();
 
         const { form } = this.state;
-        const username = form.username.trim();
-        const { password } = form;
+        const username = form.username.value.trim();
+        const password = form.password.value;
 
         // send form to server and receive back either error or token
         try {
@@ -71,25 +64,66 @@ class BasicLogin extends Component {
             } else {
                 const { error } = await response.json();
                 console.log({ error });
+                this.handleResponseError(response.status, error);
             }
 
         } catch (error) {
-            console.log({ error });
+            this.props.flashError('Something went wrong. Please try again');
+        }
+    }
+
+    handleResponseError = (status, error) => {
+        if (status === 500) return this.props.flashError(error);
+        if (status === 422) {
+            if (typeof error === 'string') {
+                this.setState({ formError: error });
+            } else {
+                this.setState(prevState => {
+                    const { form } = prevState;
+                    const attrs = Object.keys(form);
+
+                    attrs.forEach(attr => {
+                        form[attr].error = error[attr];
+                    });
+
+                    return { ...prevState, form };
+                });
+            }
         }
     }
 
     render () {
         const { handleChange, handleSubmit, state } = this;
-        const { form } = state;
+        const { form, formError } = state;
         const { username, password } = form;
         
         return (
             <AuthForm onSubmit={ handleSubmit }>
                 <FormHeading>Log In</FormHeading>
-                <FormFields>
-                    <FormInput type='text' placeholder='Username' focus value={ username } onChange={ handleChange('username') } />
-                    <FormInput type='password' placeholder='Password' value={ password } onChange={ handleChange('password') } />
-                </FormFields>
+                
+                { formError && <FormError>{ formError }</FormError> }
+
+                <FormInput
+                    label='Username'
+                    placeholder='fprefect'
+                    value={ username.value }
+                    onChange={ handleChange('username') }
+                    focus
+                    withError
+                    error={ username.error }
+                    showError={ true }
+                />
+                <FormInput
+                    type='password'
+                    label='Password'
+                    placeholder='SLaR!1bar!fAS~'
+                    value={ password.value }
+                    onChange={ handleChange('password') }
+                    withError
+                    error={ password.error }
+                    showError={ true }
+                />
+                
                 <FormSubmitRow>
                     <Button type='submit' value='Log In' readOnly />
                 </FormSubmitRow>

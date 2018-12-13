@@ -122,13 +122,11 @@ class SignUpForm extends Component {
                 this.props.login(token);
             } else {
                 const { error } = await response.json();
-                console.log({ error });
-
                 this.handleResponseError(response.status, error);
             }
 
         } catch (error) {
-            console.log({ error });
+            this.props.flashError('Something went wrong. Please try again');
         }
     }
 

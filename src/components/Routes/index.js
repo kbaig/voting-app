@@ -50,6 +50,7 @@ class Main extends Component {
                     isAuthenticated={ isAuthenticated }
                     component={ Login }
                     login={ login }
+                    flashError={ flashError }
                 />
                 <ProtectedAgainstAuthRoute
                     path='/signup/'

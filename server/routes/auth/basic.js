@@ -32,7 +32,7 @@ router.post('/signup', jsonBodyMiddleware, validate('signup'), async (req, res) 
 
     } catch (error) {
         console.log('error:', error);
-        res.status(500).json({ error: 'Something unexpected went wrong' });
+        res.status(500).json({ error: 'Internal server error occurred' });
     }
 });
 
@@ -63,12 +63,12 @@ router.post('/login', jsonBodyMiddleware, validate('login'), async (req, res) =>
             } else {
                 // respond with error if passwords don't match
                 console.log('error:', 'invalid username or password');
-                res.status(422).json({ error: 'invalid username or password' });
+                res.status(422).json({ error: 'Invalid username or password' });
             }
         } else {
             // respond with error if user doesn't exist
             console.log('error:', 'invalid username or password');
-            res.status(422).json({ error: 'invalid username or password' });
+            res.status(422).json({ error: 'Invalid username or password' });
         }
 
     } catch (error) {
