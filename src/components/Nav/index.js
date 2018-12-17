@@ -20,7 +20,7 @@ class Nav extends Component {
                     { isAuthenticated ?
                     <>
                         <li>{ user.name }</li>
-                        <li><Button type='button' value='Log Out' onClick={ logout } /></li>
+                        <li><Button onClick={ logout } >Log Out</Button></li>
                     </> :
                     <>
                         <li><Link to='/login/'>Login</Link></li>

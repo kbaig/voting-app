@@ -1,55 +1,65 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt, faShareAlt, faClipboard, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-import { ReactComponent as DownArrow } from '../../svg/down-arrow.svg';
-import { ReactComponent as UpArrow } from '../../svg/up-arrow.svg';
+import Button from '../../primitives/Button';
 
 class MyPoll extends Component {
     constructor () {
         super();
 
+        this.urlRef = createRef();
+
         this.state = {
-            expanded: false
+            showShare: false
         };
     }
 
-    share = () => {
-        navigator.clipboard
-        .writeText(`http://localhost:3000/polls/${this.props.poll.id}`)
-        .then(text => console.log('succesfully copied'))
-        .catch(err => console.log('failed to copy'));
+    revealShare = () => {
+        this.setState({ showShare: true });
     }
 
-    toggleExpanded = () => {
-        this.setState(prevState => ({
-            ...prevState,
-            expanded: !prevState.expanded
-        }));
+    selectUrl = () => {
+        this.urlRef.current.select();
+    }
+
+    handleUrlCopyClick = () => {
+        this.selectUrl();
+        this.props.copyToClipboard();
     }
 
     render () {
-        const { state, props, share, toggleExpanded } = this;
-        const { expanded } = state;
-        const { poll, removePoll } = props;
-        const { id, name } = poll;       
+        const { revealShare, selectUrl, handleUrlCopyClick, urlRef, state, props } = this;
+        const { showShare } = state;
+        const { poll, requestDeletionConfirmation, url, copied } = props;
+        const { id, name, options } = poll;
+        const voteCount = options.reduce((acc, option) => acc + option.votes, 0);
         
         return (
-            <li>
-                <div className='top-row'>
-                    <Link to={ `/polls/${id}` }>{ name }</Link>
-                    <button className='expand' onClick={ toggleExpanded }>{ expanded ? <UpArrow /> : <DownArrow /> }</button>
+            <li className='MyPoll'>
+                <div className='PollInfo'>
+                    <Link to={ `/polls/${id}` }>{ name }</Link>                   
+                    
+                    <div className='VotesAndButtons'>
+                        <div className='Votes'><span className='VoteCount'>{voteCount}</span> votes</div>
+                        <div>
+                            <button className='DeleteButton' onClick={ requestDeletionConfirmation }><FontAwesomeIcon icon={ faTrashAlt } /></button>
+                            <button className='ShareButton' onClick={ revealShare }><FontAwesomeIcon icon={ faShareAlt } /></button>
+                        </div>
+                    </div>                    
                 </div>
                 
-                { expanded && <>
-                    <div>details: { id }</div>
-                    <div className='bottom-row'>
-                        <button onClick={ removePoll }>Delete</button>
-                        <button onClick={ share }>Share</button>                        
-                    </div>
-                    
-                </> }
 
+                { true && <div className='SharePoll'>
+                    <input className='ShareURL' value={ url } ref={ urlRef } onClick={ selectUrl } readOnly />
+                    <Button onClick={ handleUrlCopyClick }> { copied ?
+                        <>Copied<FontAwesomeIcon icon={ faCheck } /></> :
+                        <>Copy<FontAwesomeIcon icon={ faClipboard } /></>
+                    }
+                    </Button>
+                </div> }
             </li>
         );
     }

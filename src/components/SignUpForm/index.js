@@ -10,6 +10,7 @@ import Button from '../../primitives/Button';
 
 import validate from './validate';
 
+// TODO: add email and username check on onfocus
 class SignUpForm extends Component {
     constructor () {
         super();
@@ -219,7 +220,7 @@ class SignUpForm extends Component {
                     />
                        
                     <FormSubmitRow>
-                        <Button type='Submit' value='Sign Up' readOnly />
+                        <Button>Sign Up</Button>
                     </FormSubmitRow>
 
                 </AuthForm>

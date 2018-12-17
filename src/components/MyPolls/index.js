@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 import MyPoll from './MyPoll';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
+
+import RouteHeading from '../../primitives/RouteHeading';
 
 import './MyPolls.sass';
 
@@ -8,7 +11,11 @@ class MyPolls extends Component {
     constructor () {
         super();
 
-        this.state = { polls: [] };
+        this.state = {
+            polls: [],
+            deleteConfirmationModalId: null,
+            copiedtoClipboardId: null
+        };
     }
 
     async componentDidMount () {
@@ -21,50 +28,83 @@ class MyPolls extends Component {
                 this.setState({ polls });
             } else {
                 const { error } = await response.json();
-                console.log({ error });
+                this.handleResponseError(response.status, error);
             }
 
         } catch (error) {
-            console.log({ error });
+            this.props.flashError(error);
         }
     }
 
-    removePoll = async id => {
+    removePoll = id => async () => {
         try {
             const response = await fetch(`http://localhost:3001/api/polls/${id}`, {
                 method: 'DELETE',
-                headers: { Authorization: `Bearer ${this.props.token}`}
+                headers: { Authorization: `Bearer ${this.props.token}` }
             });
 
             if (response.ok) {
-                const deletedPoll = await response.json();
+                const { deletedPoll } = await response.json();
                 this.setState(prevState => ({
                     ...prevState,
-                    polls: prevState.polls.filter(poll => poll._id !== deletedPoll._id)
+                    polls: prevState.polls.filter(poll => poll.id !== deletedPoll.id),
+                    deleteConfirmationModalId: null
                 }));
             } else {
                 const { error } = await response.json();
-                console.log({ error });
+                this.handleResponseError(response.status, error);
             }
-            
+
         } catch (error) {
-            console.log({ error });
+            this.props.flashError(error);
         }
     }
 
+    handleResponseError = (status, error) => {
+        if (status === 500) return this.props.flashError(error);
+        else if (status === 401) return console.log(`error 401: ${error}`);
+    }
+
+    cancelDeletion = () => {
+        this.setState({ deleteConfirmationModalId: null });
+    }
+    
+    requestDeletionConfirmation = id => () => {
+        this.setState({ deleteConfirmationModalId: id });
+    }
+
+    copyToClipboard = id => () => {
+        navigator.clipboard
+        .writeText(`http://localhost:3000/polls/${id}`)
+        .then(text => {
+            console.log(`copied to clipboard: ${id}`);
+            this.setState({ copiedtoClipboardId: id });
+        })
+        .catch(err => this.props.flashError('Failed to copy. Please try again'));
+    }
+
     render () {
-        const polls = this.state.polls.map(poll => <MyPoll
-            key={ poll.id }
-            poll={ poll }
-            removePoll={ () => this.removePoll(poll.id) }
-         />);
+        const { removePoll, cancelDeletion, requestDeletionConfirmation, copyToClipboard, state } = this;
+        const { polls, deleteConfirmationModalId, copiedtoClipboardId } = state;
 
         return (
             <>
-                <h1>My Polls</h1>
+                <RouteHeading>My Polls</RouteHeading>
                 <ul className='MyPolls'>
-                    { polls }
+                    { polls.map(poll => <MyPoll
+                        key={ poll.id }
+                        poll={ poll }
+                        requestDeletionConfirmation={ requestDeletionConfirmation(poll.id) }
+                        url={ `http://localhost:3000/polls/${poll.id}` }
+                        copyToClipboard={ copyToClipboard(poll.id) }
+                        copied={ poll.id === copiedtoClipboardId }
+                    />) }
                 </ul>
+
+                { deleteConfirmationModalId && <DeleteConfirmationModal
+                    cancelDeletion={ cancelDeletion }
+                    confirmDeletion={ removePoll(deleteConfirmationModalId) }
+                /> }
             </>
         );
     }

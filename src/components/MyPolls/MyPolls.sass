@@ -1,39 +1,77 @@
-.MyPolls li
-  margin-bottom: 5px
-  list-style-type: none
-  padding: 10px 15px
-  background: rgba(204, 251, 254, 0.7)
-  border: 1px solid #BBBBBB
-  border-radius: 4px
-  &:last-of-type
-    margin-bottom: 0
-  &:hover
-    background: rgba(204, 251, 254, 1)
-    border: 1px solid #666666
+.MyPolls
+  .MyPoll
+    margin-bottom: 15px
+    padding: 15px 20px
+    background: rgba(0,0,0,0.1)
+    border: 1px solid rgba(0,0,0,0.1)
+    border-radius: 4px
+    list-style-type: none
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.4)
+    &:last-of-type
+      margin-bottom: 0
+      
+    &:hover
+      background: rgba(0,0,0,0.2)
+      border: 1px solid rgba(0,0,0,0.15)
 
-  .top-row
-    display: flex
-    justify-content: space-between
-    align-items: center
 
-    a
-      margin-right: 10px
-      text-decoration: none
-      color: inherit
-      &:hover
-        text-decoration: underline
+    .PollInfo
+      display: flex
+      align-items: center
 
-    .expand
-      background: inherit
-      border: none
-      cursor: pointer
+      a
+        word-break: break-word
+        flex-basis: 0
+        flex-grow: 1
+        margin-right: 10px
+        text-decoration: none
+        color: inherit
+        &:hover
+          text-decoration: underline
 
-  .bottom-row
-    display: flex
-    justify-content: flex-end
+    .VotesAndButtons
+      display: flex
+      align-items: center
+
+      .Votes
+        margin-right: 10px
+
+        .VoteCount
+          font-weight: 600
+
+      button
+        margin-right: 5px
+        &:last-of-type
+          margin-right: 0
+        height: 30px
+        width: 30px
+        cursor: pointer
+        border: 1px solid rgba(0,0,0,0.3)
+        border-radius: 50%
+
+        &.DeleteButton
+          color: rgba(255,0,0,0.6)
+
+        &.ShareButton
+          color: rgba(0,0,0,0.8)
+
+  .SharePoll
     margin-top: 15px
-  
-    button
-      margin-right: 10px
-      &:last-of-type
-        margin-right: 0
+    display: flex
+
+    .ShareURL
+      padding: 0
+      padding-left: 10px
+      flex-grow: 1
+      background: #fff
+      border-radius: 2px 0 0 2px
+      border: none
+      font-family: inherit
+      font-weight: 400
+      font-size: 14px
+
+    .Button
+      width: 95px
+
+      svg
+        margin-left: 5px

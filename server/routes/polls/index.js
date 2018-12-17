@@ -80,8 +80,8 @@ router.delete('/:pollId', ensureValidToken, async (req, res) => {
 
     try {
         const unformattedPoll = await Poll.findOneAndDelete({ _id, creator_id });
-        const poll = unformattedPoll.format();
-        res.json({ poll });
+        const deletedPoll = unformattedPoll.format();
+        res.json({ deletedPoll });
     } catch (error) {
         console.log({ error });
         res.status(500).json({ error: 'Internal server error occurred' });

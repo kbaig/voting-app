@@ -23,7 +23,7 @@ class Main extends Component {
         return (
             <main className='Routes'>
                 <Route path='/' exact component={ Home } />
-                <Route path='/polls/' exact component={ Polls } />
+                <Route path='/polls/' exact render={ () => <Polls flashError={ flashError } /> } />
                 <Route path='/polls/:id/' render={ props => <Poll
                     { ...props }
                     isAuthenticated={ isAuthenticated }
@@ -37,6 +37,7 @@ class Main extends Component {
                     logout={ logout }
                     component={ MyPolls }
                     user={ user }
+                    flashError={ flashError }
                 />
                 <ProtectedRoute
                     path='/create/'

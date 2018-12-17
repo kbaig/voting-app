@@ -125,7 +125,7 @@ class BasicLogin extends Component {
                 />
                 
                 <FormSubmitRow>
-                    <Button type='submit' value='Log In' readOnly />
+                    <Button>Log In</Button>
                 </FormSubmitRow>
             </AuthForm>
         );
