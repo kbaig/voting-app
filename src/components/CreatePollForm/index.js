@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+
 import FormHeading from '../../primitives/FormHeading';
-import FormFields from '../../primitives/FormFields';
 import FormInput from '../../primitives/FormInput';
 import FormSubmitRow from '../../primitives/FormSubmitRow';
 import Button from '../../primitives/Button';
@@ -90,22 +92,30 @@ class CreatePollForm extends Component {
         const { name, options } = state;
        
         const optionFields = options.map(
-            (o, id) => <FormInput key={ id } type='text' placeholder='Option' value={ o } onChange={ handleOptionChange(id) }/>
+            (option, id) => <FormInput
+                { ...(id === 0 ? { id: 'first-option' } : {}) }
+                key={ id }
+                type='text'
+                placeholder={ id }
+                value={ option }
+                onChange={ handleOptionChange(id) }
+            />
         );
 
         return (    
             <form className='CreatePollForm' onSubmit={ handleSubmit }>
                 <FormHeading>Create A Poll</FormHeading>
-                <FormFields>
-                    <FormInput type='text' placeholder='Name' value={ name } onChange={ handleNameChange }/>
-                    <div className='Options'>
-                        { optionFields }
-                        <input type='button' className='RemoveOption' onClick={ removeOption } value='-' />
-                        <input type='button' className='AddOption' onClick={ addOption } value='+' />
-                    </div>
-                </FormFields>
+        
+                <FormInput label='Name' placeholder="What's your favorite number?" value={ name } onChange={ handleNameChange }/>
+                <label className='Label' for='first-option'>Options</label>
+                <div className='Options'>
+                    { optionFields }
+                    <Button onClick={ removeOption }><FontAwesomeIcon icon={ faMinus } /></Button>
+                    <Button onClick={ addOption }><FontAwesomeIcon icon={ faPlus } /></Button>
+                </div>
+                
                 <FormSubmitRow>
-                    <Button type='submit' value='Create Poll' readOnly/>
+                    <Button>Create Poll</Button>
                 </FormSubmitRow>
             </form>
         );
