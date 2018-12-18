@@ -114,7 +114,7 @@ router.post('/vote/:pollId/:optionId', async (req, res) => {
 
 });
 
-// TOOD: validate objectids and make sure poll exists
+// TODO: validate objectids and make sure poll exists
 // add an option to a poll
 router.post('/add-option/:pollId', ensureValidToken, validate('addPollOption'), async (req, res) => {
     console.log('req.user:', req.user);

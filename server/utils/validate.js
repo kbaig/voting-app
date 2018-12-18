@@ -19,18 +19,18 @@ const validateMethod = method => {
             return [
                 body('name')
                     .exists().withMessage('Enter a name')
-                    .isString().withMessage('Name must be a string')
+                    .isString().withMessage('Must be a string')
                     .trim()
-                    .not().isEmpty().withMessage('Name must be a nonempty string'),
+                    .not().isEmpty().withMessage('Must be a nonempty string'),
                 body('options')
-                    .exists().withMessage('Enter some options')
-                    .isArray().withMessage('Options must be an array'),
+                    .exists().withMessage('Enter at least 2 options')
+                    .isArray().withMessage('Must be an array'),
                     body('options.*')
-                        .isString().withMessage('Options must only contains strings')
+                        .isString().withMessage('Must only contains strings')
                         .trim()
-                        .not().isEmpty().withMessage('Options cannot contain nonempty strings'),
+                        .not().isEmpty().withMessage('Cannot contain nonempty strings'),
                     body('options')
-                        .custom(options => options.length >= 2).withMessage('There must be at least two options'),
+                        .custom(options => options.length >= 2).withMessage('Enter at least 2 options'),
                     body('options.*')
                         .customSanitizer(option => ({ name: option }) )                        
             ];
@@ -46,7 +46,7 @@ const validateMethod = method => {
             return [
                 body('name')
                     .exists().withMessage('Enter a name')
-                    .isString().withMessage('Name must be a string')
+                    .isString().withMessage('Must be a string')
                     .trim()
                     .not().isEmpty().withMessage('Enter a name')
                     .isLength({ max: 25 }).withMessage('Cannot be longer than 25 characters')
@@ -61,7 +61,7 @@ const validateMethod = method => {
                     }).withMessage('Email already taken'),
                 body('username')
                     .exists().withMessage('Enter a username')
-                    .isString().withMessage('Username must be a string')
+                    .isString().withMessage('Must be a string')
                     .trim()
                     .not().isEmpty().withMessage('Enter a username')
                     .isLength({ min: 4 }).withMessage('Must be at least 4 characters')
@@ -73,13 +73,13 @@ const validateMethod = method => {
                     }).withMessage('Username already taken'),
                 body('password')
                     .exists().withMessage('Enter a password')
-                    .isString().withMessage('Password must be a string')
+                    .isString().withMessage('Must be a string')
                     .not().isEmpty().withMessage('Enter a password')                    
                     .isLength({ min: 8 }).withMessage('Must be at least 8 characters')
                     .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*~-]).{8,}$/).withMessage('Does not meet requirements'),
                 body('passwordConfirmation')
                     .exists().withMessage('Please confirm password')
-                    .isString().withMessage('Password confirmation must be a string')
+                    .isString().withMessage('Must be a string')
                     .not().isEmpty().withMessage('Please confirm password')
                     .custom((confirmation, { req }) => confirmation === req.body.password).withMessage('Password and password confirmation do not match')
             ];
@@ -87,12 +87,12 @@ const validateMethod = method => {
             return [
                 body('username')
                     .exists().withMessage('Enter a username')
-                    .isString().withMessage('Username must be a string')
+                    .isString().withMessage('Must be a string')
                     .trim()
                     .not().isEmpty().withMessage('Enter a username'),
                 body('password')
                     .exists().withMessage('Enter a password')
-                    .isString().withMessage('Password must be a string')
+                    .isString().withMessage('Must be a string')
                     .not().isEmpty().withMessage('Enter a password'),
             ];
     }

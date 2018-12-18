@@ -45,6 +45,7 @@ class Main extends Component {
                     token={ token }
                     logout={ logout }
                     component={ CreatePollForm }
+                    flashError={ flashError }
                 />
                 <ProtectedAgainstAuthRoute
                     path='/login/'
