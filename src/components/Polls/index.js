@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 
-import RouteHeading from '../../primitives/RouteHeading';
-
 import './Polls.sass';
 
 class Polls extends Component {
@@ -52,12 +50,9 @@ class Polls extends Component {
     });
 
     return (
-      <>
-        <RouteHeading>Polls</RouteHeading>
-        <ul className='Polls'>
-          { polls }
-        </ul>
-      </>
+      <ul className='Polls'>
+        { polls }
+      </ul>
     );
   }
 }

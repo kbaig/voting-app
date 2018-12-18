@@ -1,7 +1,11 @@
 .MyPolls
+  margin: auto
+  max-width: 800px
+
   .MyPoll
     margin-bottom: 15px
     padding: 15px 20px
+
     background: rgba(0,0,0,0.1)
     border: 1px solid rgba(0,0,0,0.1)
     border-radius: 4px
@@ -17,17 +21,32 @@
 
     .PollInfo
       display: flex
-      align-items: center
+      align-items: flex-start
 
       a
-        word-break: break-word
+        margin-right: 10px
         flex-basis: 0
         flex-grow: 1
-        margin-right: 10px
+        word-break: break-word
         text-decoration: none
         color: inherit
         &:hover
           text-decoration: underline
+
+    @media(max-width: 480px)
+      background: inherit
+      border: none
+      border-radius: 0
+      box-shadow: none
+      &:hover
+        border: none
+
+      .PollInfo
+        flex-direction: column
+
+      .VotesAndButtons
+        width: 100%
+        justify-content: space-between
 
     .VotesAndButtons
       display: flex
@@ -55,23 +74,40 @@
         &.ShareButton
           color: rgba(0,0,0,0.8)
 
-  .SharePoll
-    margin-top: 15px
-    display: flex
+    
 
-    .ShareURL
+  .SharePollContainer
+    margin-top: 10px
+    display: grid
+    grid-template-columns: auto 10px
+    grid-template-rows: auto auto
+    grid-row-gap: 10px
+
+    .NeutralButton
       padding: 0
-      padding-left: 10px
-      flex-grow: 1
-      background: #fff
-      border-radius: 2px 0 0 2px
-      border: none
-      font-family: inherit
-      font-weight: 400
-      font-size: 14px
+      grid-column: 2 / span 1
+      grid-row: 1 / span 1      
 
-    .Button
-      width: 95px
+    .SharePoll
+      grid-column: 1 / span 2
+      grid-row: 2 / span 1
+      display: flex
 
-      svg
-        margin-left: 5px
+      .ShareURL
+        padding: 0
+        padding-left: 10px
+        flex-grow: 1
+        background: #fff
+        border-radius: 2px 0 0 2px
+        border: none
+        font-family: inherit
+        font-weight: 400
+        font-size: 14px
+
+      .Button
+        display: flex
+        align-items: center
+        justify-content: center
+        width: 35px
+        border-top-left-radius: 0
+        border-bottom-left-radius: 0

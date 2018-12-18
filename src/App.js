@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import Nav from './components/Nav';
 import Routes from './components/Routes';
-import Footer from './components/Footer';
+// import Footer from './components/Footer';
 
 import FlashMessage from './primitives/FlashMessage';
 
@@ -88,7 +88,7 @@ class App extends Component {
             logout={ logout }
             flashError={ flashError }
           />
-          <Footer />
+          {/* <Footer /> */}
 
           <FlashMessage show={ error.show }>{ error.message }</FlashMessage>
           {/* <FlashMessage show={ true }>{ 'Something went wrong' }</FlashMessage> */}

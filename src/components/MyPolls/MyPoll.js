@@ -2,9 +2,10 @@ import React, { Component, createRef } from 'react';
 
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faShareAlt, faClipboard, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faShareAlt, faTimes, faCheck, faClipboard } from '@fortawesome/free-solid-svg-icons';
 
 import Button from '../../primitives/Button';
+import NeutralButton from '../../primitives/NeutralButton';
 
 class MyPoll extends Component {
     constructor () {
@@ -21,6 +22,10 @@ class MyPoll extends Component {
         this.setState({ showShare: true });
     }
 
+    hideShare = () => {
+        this.setState({ showShare :false });
+    }
+
     selectUrl = () => {
         this.urlRef.current.select();
     }
@@ -31,7 +36,7 @@ class MyPoll extends Component {
     }
 
     render () {
-        const { revealShare, selectUrl, handleUrlCopyClick, urlRef, state, props } = this;
+        const { revealShare, hideShare, selectUrl, handleUrlCopyClick, urlRef, state, props } = this;
         const { showShare } = state;
         const { poll, requestDeletionConfirmation, url, copied } = props;
         const { id, name, options } = poll;
@@ -50,15 +55,13 @@ class MyPoll extends Component {
                         </div>
                     </div>                    
                 </div>
-                
 
-                { true && <div className='SharePoll'>
-                    <input className='ShareURL' value={ url } ref={ urlRef } onClick={ selectUrl } readOnly />
-                    <Button onClick={ handleUrlCopyClick }> { copied ?
-                        <>Copied<FontAwesomeIcon icon={ faCheck } /></> :
-                        <>Copy<FontAwesomeIcon icon={ faClipboard } /></>
-                    }
-                    </Button>
+                { showShare && <div className='SharePollContainer'>
+                    <NeutralButton onClick={ hideShare }><FontAwesomeIcon icon={ faTimes } /></NeutralButton>
+                    <div className='SharePoll'>
+                        <input className='ShareURL' value={ url } ref={ urlRef } onClick={ selectUrl } readOnly />
+                        <Button onClick={ handleUrlCopyClick }><FontAwesomeIcon icon={ copied ? faCheck : faClipboard } /></Button>
+                    </div>                    
                 </div> }
             </li>
         );

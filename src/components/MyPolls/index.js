@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import MyPoll from './MyPoll';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 
-import RouteHeading from '../../primitives/RouteHeading';
-
 import './MyPolls.sass';
 
 class MyPolls extends Component {
@@ -89,7 +87,6 @@ class MyPolls extends Component {
 
         return (
             <>
-                <RouteHeading>My Polls</RouteHeading>
                 <ul className='MyPolls'>
                     { polls.map(poll => <MyPoll
                         key={ poll.id }
