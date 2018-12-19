@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import GitHubLogin from '../GitHubLogin';
 
+import RedirectOnLogin from '../../primitives/RedirectOnLogin';
+
 import AuthForm from '../../primitives/AuthForm';
 import FormHeading from '../../primitives/FormHeading';
 import FormInput from '../../primitives/FormInput';
@@ -231,4 +233,9 @@ class SignUpForm extends Component {
     }
 }
 
-export default SignUpForm;
+export default props => {
+    const { location, login } = props;
+    return <RedirectOnLogin login={ login } location={ location } render={ newLogin =>
+        <SignUpForm { ...props } login={ newLogin } />
+    } />
+};

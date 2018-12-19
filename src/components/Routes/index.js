@@ -29,6 +29,7 @@ class Main extends Component {
                     isAuthenticated={ isAuthenticated }
                     token={ token }
                     logout={ logout }
+                    user={ user }
                     /> }
                 />
                 <ProtectedRoute path='/my-polls/'
@@ -45,6 +46,7 @@ class Main extends Component {
                     token={ token }
                     logout={ logout }
                     component={ CreatePollForm }
+                    user={ user }
                     flashError={ flashError }
                 />
                 <ProtectedAgainstAuthRoute

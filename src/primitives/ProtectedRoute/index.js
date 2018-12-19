@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-const ProtectedRoute = ({ isAuthenticated, component: Component, path, ...rest }) => (
+import LogoutIfInvalidToken from '../LogoutIfInvalidToken';
+
+const ProtectedRoute = ({ path, isAuthenticated, component: Component, ...componentProps }) => (
     <Route
         path={ path }
-        render={ props => (
-            isAuthenticated ? <Component { ...props } { ...rest } /> : <Redirect to={{
+        render={ routeProps => isAuthenticated ? 
+            <LogoutIfInvalidToken
+                exp={ componentProps.user.exp }
+                logout={ componentProps.logout }
+                render={ () => <Component { ...componentProps } { ...routeProps } /> }
+            /> :
+            <Redirect to={{
                 pathname: '/login',
-                state: { return: true }
+                state: { from: routeProps.location }
             }} />
-        ) }
-    />
+        }
+    />            
 );
 
 export default ProtectedRoute;

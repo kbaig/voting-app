@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
+import { Redirect } from 'react-router-dom';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-
-import { Redirect } from 'react-router-dom';
 
 import FormHeading from '../../primitives/FormHeading';
 import FormInput from '../../primitives/FormInput';
@@ -140,15 +140,7 @@ class CreatePollForm extends Component {
     handleResponseError = (status, error) => {
         if (status === 500) return this.props.flashError('Something went wrong. Please try again');
         // TODO: figure out how to redirect back to this page after logging in
-        if (status === 401) {
-            this.props.logout();
-            return this.setState({ 
-                redirect: {
-                    pathname: '/login',
-                    state: { return: true }
-                }
-            });
-        } 
+        if (status === 401) return this.props.logout(); 
         if (status === 422) {
             return this.setState(prevState => {
                 Object.keys(error).forEach(attr => {
@@ -178,9 +170,9 @@ class CreatePollForm extends Component {
             />
         );
 
-        return (
-            <>    
-                <form className='CreatePollForm' onSubmit={ handleSubmit }>
+        return (redirect ? 
+            <Redirect to={ redirect } push /> : 
+            <form className='CreatePollForm' onSubmit={ handleSubmit }>
                     <FormHeading>Create A Poll</FormHeading>
             
                     <FormInput label='Name' placeholder="What's your favorite number?" value={ name.value } withError error={ name.error } showError onChange={ handleNameChange }/>
@@ -196,10 +188,7 @@ class CreatePollForm extends Component {
                     <FormSubmitRow>
                         <Button>Create Poll</Button>
                     </FormSubmitRow>
-                </form>
-
-                { redirect && <Redirect to={ redirect } push /> }
-            </>
+            </form>
         );
     }
 }
