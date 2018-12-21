@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { Route } from 'react-router-dom';
 
+import LogoutIfInvalidToken from '../../primitives/LogoutIfInvalidToken';
 import ProtectedRoute from '../../primitives/ProtectedRoute';
 import ProtectedAgainstAuthRoute from '../../primitives/ProtectedAgainstAuthRoute';
 
@@ -21,49 +22,51 @@ class Main extends Component {
         const { isAuthenticated, token, login, logout, user, flashError } = this.props;
 
         return (
-            <main className='Routes'>
-                <Route path='/' exact component={ Home } />
-                <Route path='/polls/' exact render={ () => <Polls flashError={ flashError } /> } />
-                <Route path='/polls/:id/' render={ props => <Poll
-                    { ...props }
-                    isAuthenticated={ isAuthenticated }
-                    token={ token }
-                    logout={ logout }
-                    user={ user }
-                    /> }
-                />
-                <ProtectedRoute path='/my-polls/'
-                    isAuthenticated={ isAuthenticated }
-                    token={ token }
-                    logout={ logout }
-                    component={ MyPolls }
-                    user={ user }
-                    flashError={ flashError }
-                />
-                <ProtectedRoute
-                    path='/create/'
-                    isAuthenticated={ isAuthenticated }
-                    token={ token }
-                    logout={ logout }
-                    component={ CreatePollForm }
-                    user={ user }
-                    flashError={ flashError }
-                />
-                <ProtectedAgainstAuthRoute
-                    path='/login/'
-                    isAuthenticated={ isAuthenticated }
-                    component={ Login }
-                    login={ login }
-                    flashError={ flashError }
-                />
-                <ProtectedAgainstAuthRoute
-                    path='/signup/'
-                    component={ SignUpForm }
-                    isAuthenticated={ isAuthenticated }
-                    login={ login }
-                    flashError={ flashError }
-                />
-            </main>
+            <LogoutIfInvalidToken logout={ logout } exp={ user && user.exp } render={() => 
+                <main className='Routes'>
+                    <Route path='/' exact component={ Home } />
+                    <Route path='/polls/' exact render={ () => <Polls flashError={ flashError } /> } />
+                    <Route path='/polls/:id/' render={ props => <Poll
+                        { ...props }
+                        isAuthenticated={ isAuthenticated }
+                        token={ token }
+                        logout={ logout }
+                        user={ user }
+                        /> }
+                    />
+                    <ProtectedRoute path='/my-polls/'
+                        isAuthenticated={ isAuthenticated }
+                        token={ token }
+                        logout={ logout }
+                        component={ MyPolls }
+                        user={ user }
+                        flashError={ flashError }
+                    />
+                    <ProtectedRoute
+                        path='/create/'
+                        isAuthenticated={ isAuthenticated }
+                        token={ token }
+                        logout={ logout }
+                        component={ CreatePollForm }
+                        user={ user }
+                        flashError={ flashError }
+                    />
+                    <ProtectedAgainstAuthRoute
+                        path='/login/'
+                        isAuthenticated={ isAuthenticated }
+                        component={ Login }
+                        login={ login }
+                        flashError={ flashError }
+                    />
+                    <ProtectedAgainstAuthRoute
+                        path='/signup/'
+                        component={ SignUpForm }
+                        isAuthenticated={ isAuthenticated }
+                        login={ login }
+                        flashError={ flashError }
+                    />
+                </main>
+            } />
         );
     }
 }
