@@ -16,15 +16,16 @@ class CreatePollForm extends Component {
     constructor () {
         super();
 
-        // TODO: refactor state to form attr
         this.state = {
-            name: {
-                value: '',
-                error: null
-            },
-            options: {
-                value: ['', ''],
-                error: null
+            form: {
+                name: {
+                    value: '',
+                    error: null
+                },
+                options: {
+                    value: ['', ''],
+                    error: null
+                }
             },
             redirect: null
         };
@@ -35,32 +36,42 @@ class CreatePollForm extends Component {
 
         this.setState(prevState => ({
             ...prevState,
-            name: {
-                ...prevState.name,
-                value,
-                error: null
+            form: {
+                ...prevState.form,
+                name: {
+                    ...prevState.form.name,
+                    value,
+                    error: null
+                }
             }
         }));
     }
 
     handleOptionChange = id => e => {
         const { value } = e.target;
+
         this.setState(prevState => ({
             ...prevState,
-            options: {
-                ...prevState.options,
-                value: prevState.options.value.map((o, i) => i === id ? value : o),
-                error: null
-            }
+            form: {
+                ...prevState.form,
+                options: {
+                    ...prevState.form.options,
+                    value: prevState.form.options.value.map((o, i) => i === id ? value : o),
+                    error: null
+                }
+            }            
         }));
     }
 
     addOption = () => {
         this.setState(prevState => ({
             ...prevState,
-            options: {
-                ...prevState.options,
-                value: [...prevState.options.value, '']
+            form: {
+                ...prevState.form,
+                options: {
+                    ...prevState.form.options,
+                    value: [...prevState.form.options.value, '']
+                }    
             }
         }));
     }
@@ -69,11 +80,14 @@ class CreatePollForm extends Component {
         // only remove if there are more than 2 options available
         this.setState(prevState => ({
             ...prevState,
-            options: {
-                ...prevState.options,
-                value: prevState.options.value.length <= 2 ?
-                    prevState.options.value :
-                    prevState.options.value.slice(0, prevState.options.value.length - 1)
+            form: {
+                ...prevState.form,
+                options: {
+                    ...prevState.form.options,
+                    value: prevState.form.options.value.length <= 2 ?
+                        prevState.form.options.value :
+                        prevState.form.options.value.slice(0, prevState.form.options.value.length - 1)
+                }
             }
         }));
     }
@@ -81,7 +95,7 @@ class CreatePollForm extends Component {
     // front end validation before submission
     handleSubmit = e => {
         e.preventDefault();
-        let { name, options } = this.state;
+        let { name, options } = this.state.form;
 
         // trim name and option strings, and remove empty option fields
         name = name.value.trim();        
@@ -97,13 +111,16 @@ class CreatePollForm extends Component {
         if (nameIsEmpty || notEnoughOptions) {
             this.setState(prevState => ({
                 ...prevState,
-                name: {
-                    ...prevState.name,
-                    error: nameIsEmpty ? 'Enter a name' : null
-                },
-                options: {
-                    ...prevState.options,
-                    error: notEnoughOptions ? 'Enter at least 2 options' : null
+                form: {
+                    ...prevState.form,
+                    name: {
+                        ...prevState.form.name,
+                        error: nameIsEmpty ? 'Enter a name' : null
+                    },
+                    options: {
+                        ...prevState.form.options,
+                        error: notEnoughOptions ? 'Enter at least 2 options' : null    
+                    }
                 }
             }));
         }   else {
@@ -143,8 +160,8 @@ class CreatePollForm extends Component {
         if (status === 422) {
             return this.setState(prevState => {
                 Object.keys(error).forEach(attr => {
-                    prevState[attr] = {
-                        ...prevState[attr],
+                    prevState.form[attr] = {
+                        ...prevState.form[attr],
                         error: error[attr]
                     };
                 });
@@ -156,7 +173,8 @@ class CreatePollForm extends Component {
 
     render () {
         const { handleOptionChange, handleSubmit, handleNameChange, addOption, removeOption, state } = this;
-        const { name, options, redirect } = state;
+        const { form, redirect } = state;
+        const { name, options } = form;
        
         const optionFields = options.value.map(
             (option, id) => <FormInput
@@ -166,6 +184,7 @@ class CreatePollForm extends Component {
                 placeholder={ id }
                 value={ option }
                 onChange={ handleOptionChange(id) }
+                className={ options.error && 'Invalid' }
             />
         );
 
@@ -175,14 +194,14 @@ class CreatePollForm extends Component {
                     <FormHeading>Create A Poll</FormHeading>
             
                     <FormInput label='Name' placeholder="What's your favorite number?" value={ name.value } withError error={ name.error } showError onChange={ handleNameChange }/>
+
                     <label className='Label' htmlFor='first-option'>Options</label>
-                    { options.error }
+                    { options.error && <div className='Error'>{ options.error }</div> }
                     <div className='OptionFields'>
                         { optionFields }
                         <Button onClick={ removeOption }><FontAwesomeIcon icon={ faMinus } /></Button>
                         <Button onClick={ addOption }><FontAwesomeIcon icon={ faPlus } /></Button>
-                    </div>
-                    
+                    </div>                    
                     
                     <FormSubmitRow>
                         <Button>Create Poll</Button>

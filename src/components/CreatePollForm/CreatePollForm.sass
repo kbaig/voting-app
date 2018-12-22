@@ -10,6 +10,20 @@
         font-weight: 600
         color: rgba(0,0,0,0.8)
 
+    $error-color: red
+
+    .Error
+        margin-bottom: 2px
+        font-size: 14px
+        font-weight: 500
+        color: $error-color
+
+    .Invalid
+        border-color: $error-color
+        &:focus 
+            outline: none
+            box-shadow: inset 1px 1px 1px $error-color, inset -1px -1px 1px $error-color
+
     .OptionFields
         display: grid
         grid-template-columns: auto 40px
@@ -24,3 +38,4 @@
             &:first-of-type
                 grid-row: 1 / span 1
                 
+        
