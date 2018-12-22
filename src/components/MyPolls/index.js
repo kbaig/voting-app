@@ -60,7 +60,7 @@ class MyPolls extends Component {
 
     handleResponseError = (status, error) => {
         if (status === 500) return this.props.flashError(error);
-        else if (status === 401) return this.props.logout();
+        if (status === 401) return this.props.logout();
     }
 
     cancelDeletion = () => {

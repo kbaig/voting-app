@@ -139,7 +139,6 @@ class CreatePollForm extends Component {
 
     handleResponseError = (status, error) => {
         if (status === 500) return this.props.flashError('Something went wrong. Please try again');
-        // TODO: figure out how to redirect back to this page after logging in
         if (status === 401) return this.props.logout(); 
         if (status === 422) {
             return this.setState(prevState => {
