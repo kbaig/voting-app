@@ -4,10 +4,10 @@ import { Pie } from 'react-chartjs-2';
 
 const PollPie = ({ options }) => {
     const n = options.length;
-        const colors = options.map((option, i) => {
-            const lightness = Math.floor((i / n) * 70) + 15;
-            return `hsl(212, 100%, ${lightness}%)`;
-        });
+    const colors = options.map((option, i) => {
+        const lightness = Math.floor((i / n) * 70) + 15;
+        return `hsl(212, 100%, ${lightness}%)`;
+    });
 
 
     const data = {
@@ -18,8 +18,12 @@ const PollPie = ({ options }) => {
         }]
     };
 
+    const chartOptions = {
+        legend: { position: 'right' }
+    };
+
     return (
-        <Pie data={ data } />
+        <Pie data={ data } options={ chartOptions } />
     );
 };
 

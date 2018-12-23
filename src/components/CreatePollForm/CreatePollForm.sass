@@ -18,22 +18,33 @@
         font-weight: 500
         color: $error-color
 
-    .Invalid
-        border-color: $error-color
-        &:focus 
-            outline: none
-            box-shadow: inset 1px 1px 1px $error-color, inset -1px -1px 1px $error-color
-
     .OptionFields
         display: grid
         grid-template-columns: auto 40px
         grid-gap: 10px
 
-        .FormInput
+        .OptionInput
             margin-bottom: 0
             grid-column: 1 / span 1
+            padding: 8px 10px
+            background: #fff
+            border: 1px solid #aaa
+            border-radius: 3px
+            font-family: inherit
+            font-size: 14px
+            color: #222
+            
+            &:focus
+                outline: none
+                border-color: blue        
+
+            &.Invalid
+                border-color: $error-color
+                &:focus
+                    outline: none
+                    box-shadow: inset 1px 1px 1px $error-color, inset -1px -1px 1px $error-color
         
-        .Button
+        .InputButton
             grid-column: 2 / 3        
             &:first-of-type
                 grid-row: 1 / span 1

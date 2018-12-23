@@ -7,6 +7,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 import FormHeading from '../../primitives/FormHeading';
 import FormInput from '../../primitives/FormInput';
+import InputButton from '../../primitives/InputButton';
 import FormSubmitRow from '../../primitives/FormSubmitRow';
 import Button from '../../primitives/Button';
 
@@ -70,7 +71,8 @@ class CreatePollForm extends Component {
                 ...prevState.form,
                 options: {
                     ...prevState.form.options,
-                    value: [...prevState.form.options.value, '']
+                    value: [...prevState.form.options.value, ''],
+                    error: null
                 }    
             }
         }));
@@ -78,18 +80,20 @@ class CreatePollForm extends Component {
 
     removeOption = () => {
         // only remove if there are more than 2 options available
-        this.setState(prevState => ({
-            ...prevState,
-            form: {
-                ...prevState.form,
-                options: {
-                    ...prevState.form.options,
-                    value: prevState.form.options.value.length <= 2 ?
-                        prevState.form.options.value :
-                        prevState.form.options.value.slice(0, prevState.form.options.value.length - 1)
+        if (this.state.form.options.value.length > 2) {
+            this.setState(prevState => ({
+                ...prevState,
+                form: {
+                    ...prevState.form,
+                    options: {
+                        ...prevState.form.options,
+                        value: prevState.form.options.value.slice(0, prevState.form.options.value.length - 1),                            
+                        error: null
+                    }
                 }
-            }
-        }));
+            }));
+        }
+        
     }
 
     // front end validation before submission
@@ -177,14 +181,13 @@ class CreatePollForm extends Component {
         const { name, options } = form;
        
         const optionFields = options.value.map(
-            (option, id) => <FormInput
+            (option, id) => <input
                 { ...(id === 0 ? { id: 'first-option' } : {}) }
                 key={ id }
-                type='text'
                 placeholder={ id }
                 value={ option }
                 onChange={ handleOptionChange(id) }
-                className={ options.error && 'Invalid' }
+                className={ `OptionInput${ options.error ? ' Invalid' : '' }` }
             />
         );
 
@@ -199,8 +202,8 @@ class CreatePollForm extends Component {
                     { options.error && <div className='Error'>{ options.error }</div> }
                     <div className='OptionFields'>
                         { optionFields }
-                        <Button onClick={ removeOption }><FontAwesomeIcon icon={ faMinus } /></Button>
-                        <Button onClick={ addOption }><FontAwesomeIcon icon={ faPlus } /></Button>
+                        <InputButton onClick={ removeOption }><FontAwesomeIcon icon={ faMinus } /></InputButton>
+                        <InputButton onClick={ addOption }><FontAwesomeIcon icon={ faPlus } /></InputButton>
                     </div>                    
                     
                     <FormSubmitRow>
